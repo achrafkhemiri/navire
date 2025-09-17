@@ -17,7 +17,7 @@ public class Chauffeur {
     private Long id;
 
     @Column(nullable = false)
-    private String nom ;
+    private String nom;
 
     @Column(name = "num_cin", nullable = false, unique = true, length = 8)
     private String numCin;
