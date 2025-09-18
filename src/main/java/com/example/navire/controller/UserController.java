@@ -26,9 +26,18 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDTO LoginDTO) {
+    public ResponseEntity<?> login(@RequestBody LoginDTO LoginDTO, javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) {
         String token = userService.login(LoginDTO.getMail(), LoginDTO.getPassword());
-        return ResponseEntity.ok(token);
+        javax.servlet.http.Cookie cookie = new javax.servlet.http.Cookie("jwt", token);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(3600); // 1h
+        // Active Secure si la requête est HTTPS
+        if (request.isSecure()) {
+            cookie.setSecure(true);
+        }
+        response.addCookie(cookie);
+        return ResponseEntity.ok().build(); // Ne renvoie pas le token dans le body
     }
 
     @ExceptionHandler({UserNotFoundException.class, IllegalArgumentException.class})
