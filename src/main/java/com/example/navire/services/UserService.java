@@ -1,6 +1,6 @@
 package com.example.navire.services;
 
-import com.example.navire.dto.UserDTO;
+import com.example.navire.dto.LoginDTO;
 import com.example.navire.exception.UserNotFoundException;
 import com.example.navire.mapper.UserMapper;
 import com.example.navire.model.User;
@@ -23,14 +23,14 @@ public class UserService {
     private JwtUtil jwtUtil;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public UserDTO getUserById(Long id) {
+    public LoginDTO getUserById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
         return userMapper.toDTO(user);
     }
 
     @Transactional
-    public UserDTO register(String mail, String password) {
+    public LoginDTO register(String mail, String password) {
         if (userRepository.existsByMail(mail)) {
             throw new IllegalArgumentException("Mail already exists");
         }

@@ -1,4 +1,5 @@
 package com.example.navire.dto;
+import java.util.Set;
 
 import lombok.*;
 import java.time.LocalDate;
@@ -16,8 +17,8 @@ public class VoyageDTO {
     private LocalDate date;
     private Double poidsClient;
     private Double poidsDepot;
-    private String chauffeurMatricule;
-    private Long camionId;
+    private Set<Long> chauffeurIds;
+        private Set<Long> camionIds;
     private Long clientId;
     private Long depotId;
     private Long projetId;

@@ -14,7 +14,8 @@ public class ProjetMapper {
             projet.getNomProduit(),
             projet.getQuantiteTotale(),
             projet.getNomNavire(),
-            projet.getPaysNavire()
+            projet.getPaysNavire(),
+            projet.getEtat()
         );
     }
 
@@ -27,6 +28,7 @@ public class ProjetMapper {
         projet.setQuantiteTotale(dto.getQuantiteTotale());
         projet.setNomNavire(dto.getNomNavire());
         projet.setPaysNavire(dto.getPaysNavire());
+        projet.setEtat(dto.getEtat());
         return projet;
     }
 }

@@ -23,8 +23,16 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/users/login", "/api/users/register").permitAll()
-                .anyRequest().authenticated()
+                    .requestMatchers(
+                        "/api/users/login",
+                        "/api/users/register",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html",
+                        "/v3/api-docs/**",
+                        "/v2/api-docs",
+                        "/webjars/**"
+                    ).permitAll()
+                    .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

@@ -1,6 +1,6 @@
 package com.example.navire.controller;
 
-import com.example.navire.dto.UserDTO;
+import com.example.navire.dto.LoginDTO;
 import com.example.navire.services.UserService;
 import com.example.navire.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,19 +15,19 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+    public ResponseEntity<LoginDTO> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> register(@RequestBody UserDTO userDTO) {
-        UserDTO created = userService.register(userDTO.getMail(), userDTO.getPassword());
+    public ResponseEntity<LoginDTO> register(@RequestBody LoginDTO LoginDTO) {
+        LoginDTO created = userService.register(LoginDTO.getMail(), LoginDTO.getPassword());
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
-        String token = userService.login(userDTO.getMail(), userDTO.getPassword());
+    public ResponseEntity<String> login(@RequestBody LoginDTO LoginDTO) {
+        String token = userService.login(LoginDTO.getMail(), LoginDTO.getPassword());
         return ResponseEntity.ok(token);
     }
 

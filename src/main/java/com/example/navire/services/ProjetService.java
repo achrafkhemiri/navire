@@ -33,8 +33,9 @@ public class ProjetService {
 
     @Transactional
     public ProjetDTO createProjet(ProjetDTO dto) {
-        Projet projet = projetMapper.toEntity(dto);
-        return projetMapper.toDTO(projetRepository.save(projet));
+    Projet projet = projetMapper.toEntity(dto);
+    projet.setEtat(dto.getEtat());
+    return projetMapper.toDTO(projetRepository.save(projet));
     }
 
     @Transactional
@@ -46,6 +47,7 @@ public class ProjetService {
         projet.setQuantiteTotale(dto.getQuantiteTotale());
         projet.setNomNavire(dto.getNomNavire());
         projet.setPaysNavire(dto.getPaysNavire());
+    projet.setEtat(dto.getEtat());
         return projetMapper.toDTO(projetRepository.save(projet));
     }
 

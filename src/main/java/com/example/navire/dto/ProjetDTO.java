@@ -14,4 +14,5 @@ public class ProjetDTO {
     private Double quantiteTotale;
     private String nomNavire;
     private String paysNavire;
+    private String etat;
 }

@@ -1,6 +1,9 @@
 package com.example.navire.model;
+import java.util.Set;
+import java.util.HashSet;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 // Lombok annotations
@@ -17,9 +20,21 @@ public class Camion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "Le matricule est obligatoire")
+    @Size(min = 2, max = 20, message = "Le matricule doit comporter entre 2 et 20 caractères")
     @Column(nullable = false, unique = true)
     private String matricule;
 
+    @NotNull(message = "La société est obligatoire")
+    @Size(min = 2, max = 100, message = "La société doit comporter entre 2 et 100 caractères")
     @Column(nullable = false)
     private String societe;
+
+        @ManyToMany
+        @JoinTable(
+            name = "camion_voyage",
+            joinColumns = @JoinColumn(name = "camion_id"),
+            inverseJoinColumns = @JoinColumn(name = "voyage_id")
+        )
+        private Set<Voyage> voyages = new HashSet<>();
 }

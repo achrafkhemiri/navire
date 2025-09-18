@@ -1,4 +1,6 @@
 package com.example.navire.services;
+import java.util.Set;
+import java.util.HashSet;
 
 import com.example.navire.dto.VoyageDTO;
 import com.example.navire.exception.VoyageNotFoundException;
@@ -56,8 +58,22 @@ public class VoyageService {
         voyage.setDate(dto.getDate());
         voyage.setPoidsClient(dto.getPoidsClient());
         voyage.setPoidsDepot(dto.getPoidsDepot());
-        voyage.setChauffeurMatricule(dto.getChauffeurMatricule());
-        voyage.setCamion(dto.getCamionId() != null ? camionRepository.findById(dto.getCamionId()).orElse(null) : null);
+        // Many-to-many chauffeurs
+        if (dto.getChauffeurIds() != null) {
+            Set<Chauffeur> chauffeurs = dto.getChauffeurIds().stream()
+                .map(id -> chauffeurRepository.findById(id).orElse(null))
+                .filter(ch -> ch != null)
+                .collect(Collectors.toSet());
+            voyage.setChauffeurs(chauffeurs);
+        }
+        // Many-to-many camions
+        if (dto.getCamionIds() != null) {
+            Set<Camion> camions = dto.getCamionIds().stream()
+                .map(id -> camionRepository.findById(id).orElse(null))
+                .filter(c -> c != null)
+                .collect(Collectors.toSet());
+            voyage.setCamions(camions);
+        }
         voyage.setClient(dto.getClientId() != null ? clientRepository.findById(dto.getClientId()).orElse(null) : null);
         voyage.setDepot(dto.getDepotId() != null ? depotRepository.findById(dto.getDepotId()).orElse(null) : null);
         voyage.setProjet(dto.getProjetId() != null ? projetRepository.findById(dto.getProjetId()).orElse(null) : null);
@@ -74,8 +90,22 @@ public class VoyageService {
         voyage.setDate(dto.getDate());
         voyage.setPoidsClient(dto.getPoidsClient());
         voyage.setPoidsDepot(dto.getPoidsDepot());
-        voyage.setChauffeurMatricule(dto.getChauffeurMatricule());
-        voyage.setCamion(dto.getCamionId() != null ? camionRepository.findById(dto.getCamionId()).orElse(null) : null);
+        // Many-to-many chauffeurs
+        if (dto.getChauffeurIds() != null) {
+            Set<Chauffeur> chauffeurs = dto.getChauffeurIds().stream()
+                .map(chauffeurId -> chauffeurRepository.findById(chauffeurId).orElse(null))
+                .filter(ch -> ch != null)
+                .collect(Collectors.toSet());
+            voyage.setChauffeurs(chauffeurs);
+        }
+        // Many-to-many camions
+        if (dto.getCamionIds() != null) {
+            Set<Camion> camions = dto.getCamionIds().stream()
+                .map(camionId -> camionRepository.findById(camionId).orElse(null))
+                .filter(c -> c != null)
+                .collect(Collectors.toSet());
+            voyage.setCamions(camions);
+        }
         voyage.setClient(dto.getClientId() != null ? clientRepository.findById(dto.getClientId()).orElse(null) : null);
         voyage.setDepot(dto.getDepotId() != null ? depotRepository.findById(dto.getDepotId()).orElse(null) : null);
         voyage.setProjet(dto.getProjetId() != null ? projetRepository.findById(dto.getProjetId()).orElse(null) : null);

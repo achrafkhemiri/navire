@@ -1,6 +1,9 @@
 package com.example.navire.model;
+import java.util.Set;
+import java.util.HashSet;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Getter
@@ -16,9 +19,21 @@ public class Chauffeur {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "Le nom du chauffeur est obligatoire")
+    @Size(min = 2, max = 100, message = "Le nom du chauffeur doit comporter entre 2 et 100 caractères")
     @Column(nullable = false)
     private String nom;
 
+    @NotNull(message = "Le numéro CIN est obligatoire")
+    @Size(min = 8, max = 8, message = "Le numéro CIN doit comporter 8 chiffres")
     @Column(name = "num_cin", nullable = false, unique = true, length = 8)
     private String numCin;
+
+        @ManyToMany
+        @JoinTable(
+            name = "chauffeur_voyage",
+            joinColumns = @JoinColumn(name = "chauffeur_id"),
+            inverseJoinColumns = @JoinColumn(name = "voyage_id")
+        )
+        private Set<Voyage> voyages = new HashSet<>();
 }
