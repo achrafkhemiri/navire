@@ -18,19 +18,12 @@ public class VoyageMapper {
         dto.setDate(voyage.getDate());
         dto.setPoidsClient(voyage.getPoidsClient());
         dto.setPoidsDepot(voyage.getPoidsDepot());
-        if (voyage.getChauffeurs() != null) {
-            Set<Long> chauffeurIds = new HashSet<>();
-            voyage.getChauffeurs().forEach(ch -> chauffeurIds.add(ch.getId()));
-            dto.setChauffeurIds(chauffeurIds);
-        }
-        if (voyage.getCamions() != null) {
-            Set<Long> camionIds = new HashSet<>();
-            voyage.getCamions().forEach(c -> camionIds.add(c.getId()));
-            dto.setCamionIds(camionIds);
-        }
-        dto.setClientId(voyage.getClient() != null ? voyage.getClient().getId() : null);
-        dto.setDepotId(voyage.getDepot() != null ? voyage.getDepot().getId() : null);
-        dto.setProjetId(voyage.getProjet() != null ? voyage.getProjet().getId() : null);
-        return dto;
+        dto.setChauffeurId(voyage.getChauffeur() != null ? voyage.getChauffeur().getId() : null);
+        dto.setCamionId(voyage.getCamion() != null ? voyage.getCamion().getId() : null);
+    dto.setClientId(voyage.getClient() != null ? voyage.getClient().getId() : null);
+    dto.setDepotId(voyage.getDepot() != null ? voyage.getDepot().getId() : null);
+    dto.setProjetId(voyage.getProjet() != null ? voyage.getProjet().getId() : null);
+    dto.setUserId(voyage.getUser() != null ? voyage.getUser().getId() : null);
+    return dto;
     }
 }

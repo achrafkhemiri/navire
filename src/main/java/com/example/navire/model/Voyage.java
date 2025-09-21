@@ -47,13 +47,15 @@ public class Voyage {
     @Column(name = "poids_depot")
     private Double poidsDepot;
 
-        // Relations
-        @ManyToMany(mappedBy = "voyages")
-        private Set<Chauffeur> chauffeurs = new HashSet<>();
+    // Relations
+    @ManyToOne
+    @JoinColumn(name = "chauffeur_id")
+    private Chauffeur chauffeur;
 
     @NotNull(message = "Le camion est obligatoire")
-    @ManyToMany(mappedBy = "voyages")
-    private Set<Camion> camions = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "camion_id")
+    private Camion camion;
 
     @ManyToOne
     @JoinColumn(name = "client_id")
@@ -66,4 +68,9 @@ public class Voyage {
     @ManyToOne
     @JoinColumn(name = "projet_id")
     private Projet projet;
+
+    // Ajout relation ManyToOne vers User
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

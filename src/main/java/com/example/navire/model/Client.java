@@ -30,10 +30,6 @@ public class Client {
     @Column(nullable = false)
     private String nom;
 
-    @NotNull(message = "La quantité autorisée est obligatoire")
-    @Min(value = 0, message = "La quantité autorisée doit être positive")
-    @Column(name = "quantite_autorisee")
-    private Double quantiteAutorisee;
 
     // Relation Client <-> Projet (Many-to-Many via ProjetClient)
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)

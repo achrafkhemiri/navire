@@ -4,6 +4,11 @@ package com.example.navire.model;
 import jakarta.persistence.*;
 import java.io.Serializable;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 @Entity
 @Table(name = "projet_client")
 public class ProjetClient implements Serializable {

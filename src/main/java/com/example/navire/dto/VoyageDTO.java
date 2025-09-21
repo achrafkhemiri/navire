@@ -17,9 +17,10 @@ public class VoyageDTO {
     private LocalDate date;
     private Double poidsClient;
     private Double poidsDepot;
-    private Set<Long> chauffeurIds;
-        private Set<Long> camionIds;
+    private Long chauffeurId;
+    private Long camionId;
     private Long clientId;
     private Long depotId;
     private Long projetId;
+    private Long userId; // Ajout du champ userId
 }

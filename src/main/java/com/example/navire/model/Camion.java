@@ -21,7 +21,7 @@ public class Camion {
     private Long id;
 
     @NotNull(message = "Le matricule est obligatoire")
-    @Size(min = 2, max = 20, message = "Le matricule doit comporter entre 2 et 20 caractères")
+    @Size(min = 3, max = 20, message = "Le matricule doit comporter entre 3 et 20 caractères")
     @Column(nullable = false, unique = true)
     private String matricule;
 
@@ -30,11 +30,6 @@ public class Camion {
     @Column(nullable = false)
     private String societe;
 
-        @ManyToMany
-        @JoinTable(
-            name = "camion_voyage",
-            joinColumns = @JoinColumn(name = "camion_id"),
-            inverseJoinColumns = @JoinColumn(name = "voyage_id")
-        )
-        private Set<Voyage> voyages = new HashSet<>();
+    @OneToMany(mappedBy = "camion")
+    private Set<Voyage> voyages = new HashSet<>();
 }

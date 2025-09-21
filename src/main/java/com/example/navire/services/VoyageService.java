@@ -31,6 +31,9 @@ public class VoyageService {
     @Autowired
     private ProjetRepository projetRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     public List<VoyageDTO> getAllVoyages() {
         return voyageRepository.findAll().stream()
                 .map(voyageMapper::toDTO)
@@ -58,25 +61,30 @@ public class VoyageService {
         voyage.setDate(dto.getDate());
         voyage.setPoidsClient(dto.getPoidsClient());
         voyage.setPoidsDepot(dto.getPoidsDepot());
-        // Many-to-many chauffeurs
-        if (dto.getChauffeurIds() != null) {
-            Set<Chauffeur> chauffeurs = dto.getChauffeurIds().stream()
-                .map(id -> chauffeurRepository.findById(id).orElse(null))
-                .filter(ch -> ch != null)
-                .collect(Collectors.toSet());
-            voyage.setChauffeurs(chauffeurs);
+        // Ajout du chauffeur unique
+        if (dto.getChauffeurId() != null) {
+            Chauffeur chauffeur = chauffeurRepository.findById(dto.getChauffeurId()).orElse(null);
+            voyage.setChauffeur(chauffeur);
+        } else {
+            voyage.setChauffeur(null);
         }
-        // Many-to-many camions
-        if (dto.getCamionIds() != null) {
-            Set<Camion> camions = dto.getCamionIds().stream()
-                .map(id -> camionRepository.findById(id).orElse(null))
-                .filter(c -> c != null)
-                .collect(Collectors.toSet());
-            voyage.setCamions(camions);
+        // Ajout du camion unique
+        if (dto.getCamionId() != null) {
+            Camion camion = camionRepository.findById(dto.getCamionId()).orElse(null);
+            voyage.setCamion(camion);
+        } else {
+            voyage.setCamion(null);
         }
         voyage.setClient(dto.getClientId() != null ? clientRepository.findById(dto.getClientId()).orElse(null) : null);
         voyage.setDepot(dto.getDepotId() != null ? depotRepository.findById(dto.getDepotId()).orElse(null) : null);
         voyage.setProjet(dto.getProjetId() != null ? projetRepository.findById(dto.getProjetId()).orElse(null) : null);
+        // Ajout de l'utilisateur unique
+        if (dto.getUserId() != null) {
+            User user = userRepository.findById(dto.getUserId()).orElse(null);
+            voyage.setUser(user);
+        } else {
+            voyage.setUser(null);
+        }
         return voyageMapper.toDTO(voyageRepository.save(voyage));
     }
 
@@ -90,25 +98,30 @@ public class VoyageService {
         voyage.setDate(dto.getDate());
         voyage.setPoidsClient(dto.getPoidsClient());
         voyage.setPoidsDepot(dto.getPoidsDepot());
-        // Many-to-many chauffeurs
-        if (dto.getChauffeurIds() != null) {
-            Set<Chauffeur> chauffeurs = dto.getChauffeurIds().stream()
-                .map(chauffeurId -> chauffeurRepository.findById(chauffeurId).orElse(null))
-                .filter(ch -> ch != null)
-                .collect(Collectors.toSet());
-            voyage.setChauffeurs(chauffeurs);
+        // Ajout du chauffeur unique
+        if (dto.getChauffeurId() != null) {
+            Chauffeur chauffeur = chauffeurRepository.findById(dto.getChauffeurId()).orElse(null);
+            voyage.setChauffeur(chauffeur);
+        } else {
+            voyage.setChauffeur(null);
         }
-        // Many-to-many camions
-        if (dto.getCamionIds() != null) {
-            Set<Camion> camions = dto.getCamionIds().stream()
-                .map(camionId -> camionRepository.findById(camionId).orElse(null))
-                .filter(c -> c != null)
-                .collect(Collectors.toSet());
-            voyage.setCamions(camions);
+        // Ajout du camion unique
+        if (dto.getCamionId() != null) {
+            Camion camion = camionRepository.findById(dto.getCamionId()).orElse(null);
+            voyage.setCamion(camion);
+        } else {
+            voyage.setCamion(null);
         }
         voyage.setClient(dto.getClientId() != null ? clientRepository.findById(dto.getClientId()).orElse(null) : null);
         voyage.setDepot(dto.getDepotId() != null ? depotRepository.findById(dto.getDepotId()).orElse(null) : null);
         voyage.setProjet(dto.getProjetId() != null ? projetRepository.findById(dto.getProjetId()).orElse(null) : null);
+        // Ajout de l'utilisateur unique
+        if (dto.getUserId() != null) {
+            User user = userRepository.findById(dto.getUserId()).orElse(null);
+            voyage.setUser(user);
+        } else {
+            voyage.setUser(null);
+        }
         return voyageMapper.toDTO(voyageRepository.save(voyage));
     }
 

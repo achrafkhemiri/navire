@@ -29,11 +29,6 @@ public class Chauffeur {
     @Column(name = "num_cin", nullable = false, unique = true, length = 8)
     private String numCin;
 
-        @ManyToMany
-        @JoinTable(
-            name = "chauffeur_voyage",
-            joinColumns = @JoinColumn(name = "chauffeur_id"),
-            inverseJoinColumns = @JoinColumn(name = "voyage_id")
-        )
-        private Set<Voyage> voyages = new HashSet<>();
+    @OneToMany(mappedBy = "chauffeur")
+    private Set<Voyage> voyages = new HashSet<>();
 }
