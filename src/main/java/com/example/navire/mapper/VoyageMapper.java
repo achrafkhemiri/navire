@@ -1,29 +1,32 @@
 package com.example.navire.mapper;
-import java.util.Set;
-import java.util.HashSet;
 
-import com.example.navire.model.*;
+import com.example.navire.model.Voyage;
 import com.example.navire.dto.VoyageDTO;
-import org.springframework.stereotype.Component;
+import org.mapstruct.*;
 
-@Component
-public class VoyageMapper {
-    public VoyageDTO toDTO(Voyage voyage) {
-        if (voyage == null) return null;
-        VoyageDTO dto = new VoyageDTO();
-        dto.setId(voyage.getId());
-        dto.setNumBonLivraison(voyage.getNumBonLivraison());
-        dto.setNumTicket(voyage.getNumTicket());
-        dto.setReste(voyage.getReste());
-        dto.setDate(voyage.getDate());
-        dto.setPoidsClient(voyage.getPoidsClient());
-        dto.setPoidsDepot(voyage.getPoidsDepot());
-        dto.setChauffeurId(voyage.getChauffeur() != null ? voyage.getChauffeur().getId() : null);
-        dto.setCamionId(voyage.getCamion() != null ? voyage.getCamion().getId() : null);
-    dto.setClientId(voyage.getClient() != null ? voyage.getClient().getId() : null);
-    dto.setDepotId(voyage.getDepot() != null ? voyage.getDepot().getId() : null);
-    dto.setProjetId(voyage.getProjet() != null ? voyage.getProjet().getId() : null);
-    dto.setUserId(voyage.getUser() != null ? voyage.getUser().getId() : null);
-    return dto;
+@Mapper(componentModel = "spring")
+public interface VoyageMapper {
+    @Mapping(target = "chauffeurNom", ignore = true)
+    @Mapping(target = "camionNom", ignore = true)
+    @Mapping(target = "clientNum", ignore = true)
+    @Mapping(target = "depotNom", ignore = true)
+    VoyageDTO toDTO(Voyage voyage);
+
+    Voyage toEntity(VoyageDTO dto);
+
+    @AfterMapping
+    default void mapCustomFields(Voyage voyage, @MappingTarget VoyageDTO dto) {
+        if (voyage.getChauffeur() != null) {
+            dto.setChauffeurNom(voyage.getChauffeur().getNom());
+        }
+        if (voyage.getCamion() != null) {
+            dto.setCamionNom(voyage.getCamion().getMatricule());
+        }
+        if (voyage.getClient() != null) {
+            dto.setClientNum(voyage.getClient().getNumero());
+        }
+        if (voyage.getDepot() != null) {
+            dto.setDepotNom(voyage.getDepot().getNom());
+        }
     }
 }

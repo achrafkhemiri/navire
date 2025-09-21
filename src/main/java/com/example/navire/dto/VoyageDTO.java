@@ -18,9 +18,13 @@ public class VoyageDTO {
     private Double poidsClient;
     private Double poidsDepot;
     private Long chauffeurId;
+    private String chauffeurNom;
     private Long camionId;
+    private String camionNom;
     private Long clientId;
+    private String clientNum;
     private Long depotId;
+    private String depotNom;
     private Long projetId;
     private Long userId; // Ajout du champ userId
 }

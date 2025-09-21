@@ -2,19 +2,20 @@ package com.example.navire.mapper;
 
 import com.example.navire.model.Client;
 import com.example.navire.dto.ClientDTO;
-import org.springframework.stereotype.Component;
+import org.mapstruct.*;
+import java.util.HashMap;
+import java.util.Map;
 
-@Component
-public class ClientMapper {
-    // Map Client entity to ClientDTO, null-safe
-    public ClientDTO toDTO(Client client) {
-        if (client == null) return null;
-        ClientDTO dto = new ClientDTO();
-        dto.setId(client.getId());
-        dto.setNumero(client.getNumero());
-        dto.setNom(client.getNom());
-        // Map quantites autorisees par projet
-        java.util.Map<Long, Double> quantitesMap = new java.util.HashMap<>();
+@Mapper(componentModel = "spring")
+public interface ClientMapper {
+    @Mapping(target = "quantitesAutoriseesParProjet", ignore = true)
+    ClientDTO toDTO(Client client);
+
+    Client toEntity(ClientDTO dto);
+
+    @AfterMapping
+    default void mapQuantites(Client client, @MappingTarget ClientDTO dto) {
+        Map<Long, Double> quantitesMap = new HashMap<>();
         if (client.getProjetClients() != null) {
             client.getProjetClients().forEach(pc -> {
                 if (pc.getProjet() != null && pc.getQuantiteAutorisee() != null) {
@@ -23,17 +24,5 @@ public class ClientMapper {
             });
         }
         dto.setQuantitesAutoriseesParProjet(quantitesMap);
-        return dto;
-    }
-
-    // Map ClientDTO to Client entity, null-safe
-    public Client toEntity(ClientDTO dto) {
-        if (dto == null) return null;
-        Client client = new Client();
-        client.setId(dto.getId());
-        client.setNumero(dto.getNumero());
-        client.setNom(dto.getNom());
-        // Mapping projetClients from DTO is not handled here (needs service logic)
-        return client;
     }
 }

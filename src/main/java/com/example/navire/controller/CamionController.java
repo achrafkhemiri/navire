@@ -26,13 +26,13 @@ public class CamionController {
     }
 
     @PostMapping
-    public ResponseEntity<CamionDTO> createCamion(@RequestBody CamionDTO dto) {
+    public ResponseEntity<CamionDTO> createCamion(@RequestBody @jakarta.validation.Valid CamionDTO dto) {
         CamionDTO created = camionService.createCamion(dto);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CamionDTO> updateCamion(@PathVariable Long id, @RequestBody CamionDTO dto) {
+    public ResponseEntity<CamionDTO> updateCamion(@PathVariable Long id, @RequestBody @jakarta.validation.Valid CamionDTO dto) {
         CamionDTO updated = camionService.updateCamion(id, dto);
         return ResponseEntity.ok(updated);
     }

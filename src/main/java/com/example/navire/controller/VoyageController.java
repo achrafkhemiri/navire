@@ -12,6 +12,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/voyages")
 public class VoyageController {
+    @GetMapping("/projet/{projetId}")
+    public ResponseEntity<List<VoyageDTO>> getVoyagesByProjet(@PathVariable Long projetId) {
+        if (!voyageService.projetExists(projetId)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        List<VoyageDTO> voyages = voyageService.getVoyagesByProjetId(projetId);
+        return ResponseEntity.ok(voyages);
+    }
     @Autowired
     private VoyageService voyageService;
 

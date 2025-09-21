@@ -16,6 +16,15 @@ import java.util.stream.Collectors;
 
 @Service
 public class VoyageService {
+    public boolean projetExists(Long projetId) {
+        return projetRepository.existsById(projetId);
+    }
+    public List<VoyageDTO> getVoyagesByProjetId(Long projetId) {
+        return voyageRepository.findByProjetId(projetId)
+            .stream()
+            .map(voyageMapper::toDTO)
+            .collect(java.util.stream.Collectors.toList());
+    }
     @Autowired
     private VoyageRepository voyageRepository;
     @Autowired

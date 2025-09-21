@@ -26,13 +26,13 @@ public class ChauffeurController {
     }
 
     @PostMapping
-    public ResponseEntity<ChauffeurDTO> createChauffeur(@RequestBody ChauffeurDTO dto) {
+    public ResponseEntity<ChauffeurDTO> createChauffeur(@RequestBody @jakarta.validation.Valid ChauffeurDTO dto) {
         ChauffeurDTO created = chauffeurService.createChauffeur(dto);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ChauffeurDTO> updateChauffeur(@PathVariable Long id, @RequestBody ChauffeurDTO dto) {
+    public ResponseEntity<ChauffeurDTO> updateChauffeur(@PathVariable Long id, @RequestBody @jakarta.validation.Valid ChauffeurDTO dto) {
         ChauffeurDTO updated = chauffeurService.updateChauffeur(id, dto);
         return ResponseEntity.ok(updated);
     }

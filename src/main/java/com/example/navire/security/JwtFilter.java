@@ -29,7 +29,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // Lire le token JWT depuis le cookie HTTPOnly 'jwt'
         if (request.getCookies() != null) {
-            for (javax.servlet.http.Cookie cookie : request.getCookies()) {
+            for (jakarta.servlet.http.Cookie cookie : request.getCookies()) {
                 if ("jwt".equals(cookie.getName())) {
                     token = cookie.getValue();
                     break;

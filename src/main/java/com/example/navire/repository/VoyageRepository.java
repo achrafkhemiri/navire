@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface VoyageRepository extends JpaRepository<Voyage, Long> {
     boolean existsByNumBonLivraison(String numBonLivraison);
     boolean existsByNumTicket(String numTicket);
+
+    java.util.List<Voyage> findByProjetId(Long projetId);
 }

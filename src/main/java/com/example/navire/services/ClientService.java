@@ -45,16 +45,30 @@ public class ClientService {
 
     @Transactional
     public ClientDTO updateClient(Long id, ClientDTO dto) {
-        Client client = clientRepository.findById(id)
-                .orElseThrow(() -> new ClientNotFoundException(id));
-        client.setNumero(dto.getNumero());
-        client.setNom(dto.getNom());
-        // QuantiteAutorisee is managed via ProjetClient, not directly here
-        return clientMapper.toDTO(clientRepository.save(client));
+    Client client = clientRepository.findById(id)
+        .orElseThrow(() -> new ClientNotFoundException(id));
+    client.setNumero(dto.getNumero());
+    client.setNom(dto.getNom());
+    // QuantiteAutorisee is managed via ProjetClient, not directly here
+    return clientMapper.toDTO(clientRepository.save(client));
+    }
+
     public List<ClientDTO> getClientsByProjetId(Long projetId) {
         List<Client> clients = projetClientRepository.findClientsByProjetId(projetId);
-        return clients.stream().map(clientMapper::toDTO).collect(java.util.stream.Collectors.toList());
-    }
+        // Pour chaque client, filtrer les quantités autorisées pour le projet demandé
+        return clients.stream().map(client -> {
+            ClientDTO dto = clientMapper.toDTO(client);
+            if (dto.getQuantitesAutoriseesParProjet() != null) {
+                // Ne garder que la quantité autorisée pour ce projet
+                Double quantite = dto.getQuantitesAutoriseesParProjet().get(projetId);
+                java.util.Map<Long, Double> map = new java.util.HashMap<>();
+                if (quantite != null) {
+                    map.put(projetId, quantite);
+                }
+                dto.setQuantitesAutoriseesParProjet(map);
+            }
+            return dto;
+        }).collect(java.util.stream.Collectors.toList());
     }
 
     @Transactional

@@ -26,13 +26,13 @@ public class ProjetController {
     }
 
     @PostMapping
-    public ResponseEntity<ProjetDTO> createProjet(@RequestBody ProjetDTO dto) {
+    public ResponseEntity<ProjetDTO> createProjet(@RequestBody @jakarta.validation.Valid ProjetDTO dto) {
         ProjetDTO created = projetService.createProjet(dto);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProjetDTO> updateProjet(@PathVariable Long id, @RequestBody ProjetDTO dto) {
+    public ResponseEntity<ProjetDTO> updateProjet(@PathVariable Long id, @RequestBody @jakarta.validation.Valid ProjetDTO dto) {
         ProjetDTO updated = projetService.updateProjet(id, dto);
         return ResponseEntity.ok(updated);
     }
