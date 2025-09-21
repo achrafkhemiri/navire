@@ -11,4 +11,5 @@ public class ChauffeurDTO {
     private Long id;
     private String nom;
     private String numCin;
+    private java.util.Set<String> numBonLivraisonVoyages;
 }

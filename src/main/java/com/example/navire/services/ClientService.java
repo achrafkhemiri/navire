@@ -5,6 +5,7 @@ import com.example.navire.exception.ClientNotFoundException;
 import com.example.navire.mapper.ClientMapper;
 import com.example.navire.model.Client;
 import com.example.navire.repository.ClientRepository;
+import com.example.navire.repository.ProjetClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,8 @@ import java.util.stream.Collectors;
 public class ClientService {
     @Autowired
     private ClientRepository clientRepository;
+    @Autowired
+    private ProjetClientRepository projetClientRepository;
     @Autowired
     private ClientMapper clientMapper;
 
@@ -46,8 +49,12 @@ public class ClientService {
                 .orElseThrow(() -> new ClientNotFoundException(id));
         client.setNumero(dto.getNumero());
         client.setNom(dto.getNom());
-        client.setQuantiteAutorisee(dto.getQuantiteAutorisee());
+        // QuantiteAutorisee is managed via ProjetClient, not directly here
         return clientMapper.toDTO(clientRepository.save(client));
+    public List<ClientDTO> getClientsByProjetId(Long projetId) {
+        List<Client> clients = projetClientRepository.findClientsByProjetId(projetId);
+        return clients.stream().map(clientMapper::toDTO).collect(java.util.stream.Collectors.toList());
+    }
     }
 
     @Transactional

@@ -8,6 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import java.util.List;
+    @GetMapping("/projet/{projetId}")
+    public List<ClientDTO> getClientsByProjet(@PathVariable Long projetId) {
+        return clientService.getClientsByProjetId(projetId);
+    }
 
 @RestController
 @RequestMapping("/api/clients")

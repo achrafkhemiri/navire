@@ -13,5 +13,5 @@ public class CamionDTO {
     private String matricule;
     private String societe;
 
-        private Set<Long> voyageIds;
+    private String numBonLivraison;
 }

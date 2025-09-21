@@ -32,4 +32,7 @@ public class Camion {
 
     @OneToMany(mappedBy = "camion")
     private Set<Voyage> voyages = new HashSet<>();
+
+    @Column(name = "num_bon_livraison")
+    private String numBonLivraison;
 }

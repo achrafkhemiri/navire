@@ -11,5 +11,6 @@ public class ClientDTO {
     private Long id;
     private String numero;
     private String nom;
-    private Double quantiteAutorisee;
+    // Map of projetId to quantiteAutorisee
+    private java.util.Map<Long, Double> quantitesAutoriseesParProjet;
 }

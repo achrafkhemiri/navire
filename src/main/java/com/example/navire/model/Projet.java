@@ -6,8 +6,7 @@ import lombok.*;
 import java.util.List;
 
 import java.util.Set;
-import com.example.navire.model.ProjetClient;
-import com.example.navire.model.Depot;
+
 
 @Getter
 @Setter

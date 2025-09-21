@@ -14,11 +14,7 @@ public class CamionMapper {
         dto.setId(camion.getId());
         dto.setMatricule(camion.getMatricule());
         dto.setSociete(camion.getSociete());
-        if (camion.getVoyages() != null) {
-            Set<Long> voyageIds = new HashSet<>();
-            camion.getVoyages().forEach(v -> voyageIds.add(v.getId()));
-            dto.setVoyageIds(voyageIds);
-        }
+        dto.setNumBonLivraison(camion.getNumBonLivraison());
         return dto;
     }
 
@@ -28,6 +24,7 @@ public class CamionMapper {
         camion.setId(dto.getId());
         camion.setMatricule(dto.getMatricule());
         camion.setSociete(dto.getSociete());
-        return camion;
+    camion.setNumBonLivraison(dto.getNumBonLivraison());
+    return camion;
     }
 }
