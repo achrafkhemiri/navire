@@ -47,18 +47,18 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
-            .exceptionHandling(ex -> ex.accessDeniedHandler(accessDeniedHandler()))
+            // .exceptionHandling(ex -> ex.accessDeniedHandler(accessDeniedHandler()))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
             return http.build();
     }
-    @Bean
-    public AccessDeniedHandler accessDeniedHandler() {
-        return (request, response, accessDeniedException) -> {
-            // Log details about the forbidden access
-            System.err.println("403 Forbidden: " + request.getRequestURI() + " | Reason: " + accessDeniedException.getMessage());
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
-        };
-    }
+    // @Bean
+    // public AccessDeniedHandler accessDeniedHandler() {
+    //     return (request, response, accessDeniedException) -> {
+    //         // Log details about the forbidden access
+    //         System.err.println("403 Forbidden: " + request.getRequestURI() + " | Reason: " + accessDeniedException.getMessage());
+    //         response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
+    //     };
+    // }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

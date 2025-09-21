@@ -1,5 +1,4 @@
-
-
+package com.example.navire.controller;
 import com.example.navire.dto.ClientDTO;
 import com.example.navire.services.ClientService;
 import com.example.navire.exception.ClientNotFoundException;
