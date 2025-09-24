@@ -15,6 +15,18 @@ public class ProjetController {
     @Autowired
     private ProjetService projetService;
 
+    @PostMapping("/{projetId}/clients/{clientId}")
+    public ResponseEntity<?> addClientToProjet(@PathVariable Long projetId, @PathVariable Long clientId) {
+        projetService.addClientToProjet(projetId, clientId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{projetId}/depots/{depotId}")
+    public ResponseEntity<?> addDepotToProjet(@PathVariable Long projetId, @PathVariable Long depotId) {
+        projetService.addDepotToProjet(projetId, depotId);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping
     public List<ProjetDTO> getAllProjets() {
         return projetService.getAllProjets();

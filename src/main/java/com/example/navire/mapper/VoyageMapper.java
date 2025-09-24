@@ -16,17 +16,40 @@ public interface VoyageMapper {
 
     @AfterMapping
     default void mapCustomFields(Voyage voyage, @MappingTarget VoyageDTO dto) {
+        dto.setId(voyage.getId());
         if (voyage.getChauffeur() != null) {
             dto.setChauffeurNom(voyage.getChauffeur().getNom());
+            dto.setChauffeurId(voyage.getChauffeur().getId());
+        } else {
+            dto.setChauffeurId(null);
         }
         if (voyage.getCamion() != null) {
             dto.setCamionNom(voyage.getCamion().getMatricule());
+            dto.setCamionId(voyage.getCamion().getId());
+        } else {
+            dto.setCamionId(null);
         }
         if (voyage.getClient() != null) {
             dto.setClientNum(voyage.getClient().getNumero());
+            dto.setClientId(voyage.getClient().getId());
+        } else {
+            dto.setClientId(null);
         }
         if (voyage.getDepot() != null) {
             dto.setDepotNom(voyage.getDepot().getNom());
+            dto.setDepotId(voyage.getDepot().getId());
+        } else {
+            dto.setDepotId(null);
+        }
+        if (voyage.getProjet() != null) {
+            dto.setProjetId(voyage.getProjet().getId());
+        } else {
+            dto.setProjetId(null);
+        }
+        if (voyage.getUser() != null) {
+            dto.setUserId(voyage.getUser().getId());
+        } else {
+            dto.setUserId(null);
         }
     }
 }

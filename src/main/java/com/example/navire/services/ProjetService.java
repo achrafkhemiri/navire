@@ -3,7 +3,11 @@ package com.example.navire.services;
 import com.example.navire.dto.ProjetDTO;
 import com.example.navire.exception.ProjetNotFoundException;
 import com.example.navire.mapper.ProjetMapper;
+import com.example.navire.model.Client;
 import com.example.navire.model.Projet;
+import com.example.navire.model.Client;
+import com.example.navire.model.Depot;
+import com.example.navire.model.ProjetClient;
 import com.example.navire.repository.ProjetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +22,10 @@ public class ProjetService {
     private ProjetRepository projetRepository;
     @Autowired
     private ProjetMapper projetMapper;
+    @Autowired
+    private com.example.navire.repository.ClientRepository clientRepository;
+    @Autowired
+    private com.example.navire.repository.DepotRepository depotRepository;
 
     public List<ProjetDTO> getAllProjets() {
         return projetRepository.findAll().stream()
@@ -57,5 +65,25 @@ public class ProjetService {
             throw new ProjetNotFoundException(id);
         }
         projetRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void addClientToProjet(Long projetId, Long clientId) {
+        Projet projet = projetRepository.findById(projetId).orElseThrow(() -> new ProjetNotFoundException(projetId));
+        Client client = clientRepository.findById(clientId).orElseThrow();
+        ProjetClient pc = new ProjetClient();
+        pc.setProjet(projet);
+        pc.setClient(client);
+        pc.setQuantiteAutorisee(0.0); // valeur par défaut
+        projet.getProjetClients().add(pc);
+        projetRepository.save(projet);
+    }
+
+    @Transactional
+    public void addDepotToProjet(Long projetId, Long depotId) {
+        Projet projet = projetRepository.findById(projetId).orElseThrow(() -> new ProjetNotFoundException(projetId));
+        Depot depot = depotRepository.findById(depotId).orElseThrow();
+        projet.getDepots().add(depot);
+        projetRepository.save(projet);
     }
 }
