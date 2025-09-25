@@ -50,6 +50,17 @@ public class Projet {
     @Column(name = "etat")
     private String etat;
 
+    // Dates optionnelles
+    @Column(name = "date_debut")
+    private java.time.LocalDate dateDebut;
+
+    @Column(name = "date_fin")
+    private java.time.LocalDate dateFin;
+
+    // Projet actif ou non
+    @Column(name = "active")
+    private Boolean active = false;
+
     // Relation : un projet peut avoir plusieurs voyages
     @OneToMany(mappedBy = "projet", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Voyage> voyages;
