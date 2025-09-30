@@ -16,8 +16,17 @@ public class ProjetController {
     private ProjetService projetService;
 
     @PostMapping("/{projetId}/clients/{clientId}")
-    public ResponseEntity<?> addClientToProjet(@PathVariable Long projetId, @PathVariable Long clientId) {
-        projetService.addClientToProjet(projetId, clientId);
+    public ResponseEntity<?> addClientToProjet(@PathVariable Long projetId, @PathVariable Long clientId,
+                                               @RequestBody(required = false) java.util.Map<String, Object> body) {
+        Double quantite = null;
+        if (body != null && body.get("quantiteAutorisee") != null) {
+            try {
+                quantite = Double.valueOf(body.get("quantiteAutorisee").toString());
+            } catch (NumberFormatException e) {
+                return ResponseEntity.badRequest().body("quantiteAutorisee must be a number");
+            }
+        }
+        projetService.addClientToProjet(projetId, clientId, quantite);
         return ResponseEntity.ok().build();
     }
 
@@ -30,6 +39,15 @@ public class ProjetController {
     @GetMapping
     public List<ProjetDTO> getAllProjets() {
         return projetService.getAllProjets();
+    }
+
+    @GetMapping("/{projetId}/depots")
+    public ResponseEntity<?> getDepotsByProjet(@PathVariable Long projetId) {
+        try {
+            return ResponseEntity.ok(projetService.getDepotsByProjet(projetId));
+        } catch (ProjetNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")

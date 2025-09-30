@@ -76,6 +76,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<version>1.18.36</version>
 			<optional>true</optional>
 		</dependency>
 		<!-- MapStruct for automatic mapper generation -->
@@ -126,10 +127,35 @@
 
 	<build>
 		<plugins>
+			<!-- Fail fast when running with an incompatible JDK -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.2.1</version>
+				<executions>
+					<execution>
+						<id>enforce-java</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireJavaVersion>
+									<version>21</version>
+									<message>Project requires JDK 21. Please set JAVA_HOME to a JDK 21 installation or configure a toolchain.</message>
+								</requireJavaVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.11.0</version>
 				<configuration>
+					<release>${java.version}</release>
+					<fork>true</fork>
 					<annotationProcessorPaths>
 						<path>
 							<groupId>org.projectlombok</groupId>
