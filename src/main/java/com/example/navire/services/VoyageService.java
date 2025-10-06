@@ -42,6 +42,10 @@ public class VoyageService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private QuantiteService quantiteService;
+    @Autowired
+    private ProjetClientRepository projetClientRepository;
 
     public List<VoyageDTO> getAllVoyages() {
         return voyageRepository.findAll().stream()
@@ -63,6 +67,18 @@ public class VoyageService {
         if (voyageRepository.existsByNumTicket(dto.getNumTicket())) {
             throw new IllegalArgumentException("NumTicket already exists");
         }
+        
+        // Validation de la quantité si voyage vers client
+        if (dto.getProjetClientId() != null && dto.getQuantite() != null && dto.getQuantite() > 0) {
+            QuantiteService.ValidationResult validation = quantiteService.validerAjoutVoyage(
+                dto.getProjetClientId(), 
+                dto.getQuantite()
+            );
+            if (!validation.isValide()) {
+                throw new IllegalArgumentException(validation.getMessage());
+            }
+        }
+        
         Voyage voyage = new Voyage();
         voyage.setNumBonLivraison(dto.getNumBonLivraison());
         voyage.setNumTicket(dto.getNumTicket());
@@ -70,6 +86,7 @@ public class VoyageService {
         voyage.setDate(dto.getDate());
         voyage.setPoidsClient(dto.getPoidsClient());
         voyage.setPoidsDepot(dto.getPoidsDepot());
+        voyage.setQuantite(dto.getQuantite() != null ? dto.getQuantite() : 0.0);
         // Ajout du chauffeur unique
         if (dto.getChauffeurId() != null) {
             Chauffeur chauffeur = chauffeurRepository.findById(dto.getChauffeurId()).orElse(null);
@@ -87,6 +104,7 @@ public class VoyageService {
         voyage.setClient(dto.getClientId() != null ? clientRepository.findById(dto.getClientId()).orElse(null) : null);
         voyage.setDepot(dto.getDepotId() != null ? depotRepository.findById(dto.getDepotId()).orElse(null) : null);
         voyage.setProjet(dto.getProjetId() != null ? projetRepository.findById(dto.getProjetId()).orElse(null) : null);
+        voyage.setProjetClient(dto.getProjetClientId() != null ? projetClientRepository.findById(dto.getProjetClientId()).orElse(null) : null);
         // Ajout de l'utilisateur unique
         if (dto.getUserId() != null) {
             User user = userRepository.findById(dto.getUserId()).orElse(null);
@@ -101,12 +119,31 @@ public class VoyageService {
     public VoyageDTO updateVoyage(Long id, VoyageDTO dto) {
         Voyage voyage = voyageRepository.findById(id)
                 .orElseThrow(() -> new VoyageNotFoundException(id));
+        
+        // Validation quantité si modification et voyage vers client
+        if (dto.getProjetClientId() != null && dto.getQuantite() != null && dto.getQuantite() > 0) {
+            // Calculer la différence avec l'ancienne quantité
+            double ancienneQuantite = voyage.getQuantite() != null ? voyage.getQuantite() : 0.0;
+            double difference = dto.getQuantite() - ancienneQuantite;
+            
+            if (difference > 0) {
+                QuantiteService.ValidationResult validation = quantiteService.validerAjoutVoyage(
+                    dto.getProjetClientId(), 
+                    difference
+                );
+                if (!validation.isValide()) {
+                    throw new IllegalArgumentException(validation.getMessage());
+                }
+            }
+        }
+        
         voyage.setNumBonLivraison(dto.getNumBonLivraison());
         voyage.setNumTicket(dto.getNumTicket());
         voyage.setReste(dto.getReste());
         voyage.setDate(dto.getDate());
         voyage.setPoidsClient(dto.getPoidsClient());
         voyage.setPoidsDepot(dto.getPoidsDepot());
+        voyage.setQuantite(dto.getQuantite() != null ? dto.getQuantite() : voyage.getQuantite());
         // Ajout du chauffeur unique
         if (dto.getChauffeurId() != null) {
             Chauffeur chauffeur = chauffeurRepository.findById(dto.getChauffeurId()).orElse(null);
@@ -124,6 +161,7 @@ public class VoyageService {
         voyage.setClient(dto.getClientId() != null ? clientRepository.findById(dto.getClientId()).orElse(null) : null);
         voyage.setDepot(dto.getDepotId() != null ? depotRepository.findById(dto.getDepotId()).orElse(null) : null);
         voyage.setProjet(dto.getProjetId() != null ? projetRepository.findById(dto.getProjetId()).orElse(null) : null);
+        voyage.setProjetClient(dto.getProjetClientId() != null ? projetClientRepository.findById(dto.getProjetClientId()).orElse(null) : null);
         // Ajout de l'utilisateur unique
         if (dto.getUserId() != null) {
             User user = userRepository.findById(dto.getUserId()).orElse(null);

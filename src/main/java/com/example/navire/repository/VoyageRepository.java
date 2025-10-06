@@ -10,4 +10,5 @@ public interface VoyageRepository extends JpaRepository<Voyage, Long> {
     boolean existsByNumTicket(String numTicket);
 
     java.util.List<Voyage> findByProjetId(Long projetId);
+    java.util.List<Voyage> findByProjetClientId(Long projetClientId);
 }

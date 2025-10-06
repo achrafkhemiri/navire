@@ -69,8 +69,15 @@ public class Voyage {
     @JoinColumn(name = "projet_id")
     private Projet projet;
 
+    @ManyToOne
+    @JoinColumn(name = "projet_client_id")
+    private ProjetClient projetClient;
+
     // Ajout relation ManyToOne vers User
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    
+    @Column(nullable = false)
+    private Double quantite = 0.0;
 }

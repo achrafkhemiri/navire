@@ -41,15 +41,6 @@ public class ProjetController {
         return projetService.getAllProjets();
     }
 
-    @GetMapping("/{projetId}/depots")
-    public ResponseEntity<?> getDepotsByProjet(@PathVariable Long projetId) {
-        try {
-            return ResponseEntity.ok(projetService.getDepotsByProjet(projetId));
-        } catch (ProjetNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<ProjetDTO> getProjetById(@PathVariable Long id) {
         return ResponseEntity.ok(projetService.getProjetById(id));

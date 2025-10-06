@@ -5,6 +5,7 @@ import com.example.navire.exception.ProjetNotFoundException;
 import com.example.navire.mapper.ProjetMapper;
 import com.example.navire.model.Client;
 import com.example.navire.model.Projet;
+import com.example.navire.model.Client;
 import com.example.navire.model.Depot;
 import com.example.navire.model.ProjetClient;
 import com.example.navire.repository.ProjetRepository;
@@ -26,7 +27,7 @@ public class ProjetService {
     @Autowired
     private com.example.navire.repository.DepotRepository depotRepository;
     @Autowired
-    private com.example.navire.mapper.DepotMapper depotMapper;
+    private QuantiteService quantiteService;
 
     public List<ProjetDTO> getAllProjets() {
         return projetRepository.findAll().stream()
@@ -81,12 +82,20 @@ public class ProjetService {
 
     @Transactional
     public void addClientToProjet(Long projetId, Long clientId, Double quantiteAutorisee) {
+        // Valider la quantité avant d'ajouter le client
+        double quantite = quantiteAutorisee != null ? quantiteAutorisee : 0.0;
+        QuantiteService.ValidationResult validation = quantiteService.validerAjoutClient(projetId, quantite);
+        
+        if (!validation.isValide()) {
+            throw new IllegalArgumentException(validation.getMessage());
+        }
+        
         Projet projet = projetRepository.findById(projetId).orElseThrow(() -> new ProjetNotFoundException(projetId));
         Client client = clientRepository.findById(clientId).orElseThrow();
         ProjetClient pc = new ProjetClient();
         pc.setProjet(projet);
         pc.setClient(client);
-        pc.setQuantiteAutorisee(quantiteAutorisee != null ? quantiteAutorisee : 0.0);
+        pc.setQuantiteAutorisee(quantite);
         projet.getProjetClients().add(pc);
         projetRepository.save(projet);
     }
@@ -97,11 +106,5 @@ public class ProjetService {
         Depot depot = depotRepository.findById(depotId).orElseThrow();
         projet.getDepots().add(depot);
         projetRepository.save(projet);
-    }
-
-    public java.util.List<com.example.navire.dto.DepotDTO> getDepotsByProjet(Long projetId) {
-        Projet projet = projetRepository.findById(projetId).orElseThrow(() -> new ProjetNotFoundException(projetId));
-    java.util.Set<Depot> depots = projet.getDepots();
-    return depots.stream().map(depotMapper::toDTO).collect(java.util.stream.Collectors.toList());
     }
 }

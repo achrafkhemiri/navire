@@ -38,35 +38,24 @@ public class VoyageController {
 
     @PostMapping
     public ResponseEntity<?> createVoyage(@Valid @RequestBody VoyageDTO dto) {
-        // Validation relations obligatoires côté controller
-        StringBuilder errors = new StringBuilder();
-        if (dto.getCamionId() == null) errors.append("Le champ camionId est obligatoire. ");
-        if (dto.getChauffeurId() == null) errors.append("Le champ chauffeurId est obligatoire. ");
-        if (dto.getClientId() == null) errors.append("Le champ clientId est obligatoire. ");
-        if (dto.getDepotId() == null) errors.append("Le champ depotId est obligatoire. ");
-        if (dto.getProjetId() == null) errors.append("Le champ projetId est obligatoire. ");
-        if (dto.getUserId() == null) errors.append("Le champ userId est obligatoire. ");
-        if (errors.length() > 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors.toString());
+        String validation = validateVoyageDto(dto, false);
+        if (validation != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validation);
         }
+        // Valeur par défaut si non fournie
+        if (dto.getReste() == null) dto.setReste(0d);
         VoyageDTO created = voyageService.createVoyage(dto);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateVoyage(@PathVariable Long id, @Valid @RequestBody VoyageDTO dto) {
-        // Validation relations obligatoires côté controller
-        StringBuilder errors = new StringBuilder();
-        if (dto.getCamionId() == null) errors.append("Le champ camionId est obligatoire. ");
-        if (dto.getChauffeurId() == null) errors.append("Le champ chauffeurId est obligatoire. ");
-        if (dto.getClientId() == null) errors.append("Le champ clientId est obligatoire. ");
-        if (dto.getDepotId() == null) errors.append("Le champ depotId est obligatoire. ");
-        if (dto.getProjetId() == null) errors.append("Le champ projetId est obligatoire. ");
-        if (dto.getUserId() == null) errors.append("Le champ userId est obligatoire. ");
-        if (errors.length() > 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors.toString());
+        String validation = validateVoyageDto(dto, true);
+        if (validation != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validation);
         }
+        if (dto.getReste() == null) dto.setReste(0d);
         VoyageDTO updated = voyageService.updateVoyage(id, dto);
         return ResponseEntity.ok(updated);
     }
@@ -83,5 +72,29 @@ public class VoyageController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    /**
+     * Règles métier:
+     *  - camionId, chauffeurId, projetId, userId obligatoires
+     *  - EXACTEMENT un parmi clientId, depotId (XOR)
+     *  - reste optionnel (0 par défaut) côté controller
+     */
+    private String validateVoyageDto(VoyageDTO dto, boolean isUpdate) {
+        StringBuilder errors = new StringBuilder();
+        if (dto.getCamionId() == null) errors.append("camionId manquant. ");
+        if (dto.getChauffeurId() == null) errors.append("chauffeurId manquant. ");
+        if (dto.getProjetId() == null) errors.append("projetId manquant. ");
+        if (dto.getUserId() == null) errors.append("userId manquant. ");
+
+        boolean hasClient = dto.getClientId() != null;
+        boolean hasDepot = dto.getDepotId() != null;
+        if (hasClient && hasDepot) {
+            errors.append("Ne pas fournir les deux: clientId et depotId (choisir un seul). ");
+        } else if (!hasClient && !hasDepot) {
+            errors.append("Fournir clientId OU depotId (au moins un). ");
+        }
+
+        return errors.length() == 0 ? null : errors.toString();
     }
 }
