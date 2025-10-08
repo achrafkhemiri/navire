@@ -5,7 +5,6 @@ import com.example.navire.exception.ProjetNotFoundException;
 import com.example.navire.mapper.ProjetMapper;
 import com.example.navire.model.Client;
 import com.example.navire.model.Projet;
-import com.example.navire.model.Client;
 import com.example.navire.model.Depot;
 import com.example.navire.model.ProjetClient;
 import com.example.navire.repository.ProjetRepository;
@@ -106,5 +105,14 @@ public class ProjetService {
         Depot depot = depotRepository.findById(depotId).orElseThrow();
         projet.getDepots().add(depot);
         projetRepository.save(projet);
+    }
+
+    /**
+     * Récupère tous les dépôts associés à un projet spécifique
+     */
+    public List<Depot> getDepotsByProjetId(Long projetId) {
+        Projet projet = projetRepository.findById(projetId)
+                .orElseThrow(() -> new ProjetNotFoundException(projetId));
+        return projet.getDepots().stream().collect(Collectors.toList());
     }
 }

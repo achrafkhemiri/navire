@@ -36,6 +36,24 @@ public class ProjetController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Récupère tous les dépôts associés à un projet spécifique
+     */
+    @GetMapping("/{projetId}/depots")
+    public ResponseEntity<List<com.example.navire.dto.DepotDTO>> getDepotsByProjet(@PathVariable Long projetId) {
+        java.util.List<com.example.navire.model.Depot> depots = projetService.getDepotsByProjetId(projetId);
+        java.util.List<com.example.navire.dto.DepotDTO> dtos = depots.stream()
+                .map(depot -> {
+                    com.example.navire.dto.DepotDTO dto = new com.example.navire.dto.DepotDTO();
+                    dto.setId(depot.getId());
+                    dto.setNom(depot.getNom());
+                    dto.setProjetId(projetId); // Associer le projet ID
+                    return dto;
+                })
+                .collect(java.util.stream.Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
+
     @GetMapping
     public List<ProjetDTO> getAllProjets() {
         return projetService.getAllProjets();

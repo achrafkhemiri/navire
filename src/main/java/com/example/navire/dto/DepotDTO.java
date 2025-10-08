@@ -10,4 +10,5 @@ import lombok.*;
 public class DepotDTO {
     private Long id;
     private String nom;
+    private Long projetId; // ID du projet associé (pour filtrage)
 }
