@@ -47,6 +47,10 @@ public class Voyage {
     @Column(name = "poids_depot")
     private Double poidsDepot;
 
+    @Size(max = 100, message = "Le nom de la société doit comporter au maximum 100 caractères")
+    @Column(name = "societe", length = 100)
+    private String societe;
+
     // Relations
     @ManyToOne
     @JoinColumn(name = "chauffeur_id")

@@ -29,4 +29,5 @@ public class VoyageDTO {
     private Long userId; // Ajout du champ userId
     private Double quantite; // Quantité du voyage
     private Long projetClientId; // Lien vers ProjetClient pour les voyages clients
+    private String societe; // Nom de la société
 }
