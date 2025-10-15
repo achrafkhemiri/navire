@@ -50,6 +50,10 @@ public class Projet {
     @Column(name = "etat")
     private String etat;
 
+    @Size(max = 100, message = "Le port ne doit pas dépasser 100 caractères")
+    @Column(name = "port")
+    private String port;
+
     // Dates optionnelles
     @Column(name = "date_debut")
     private java.time.LocalDate dateDebut;
@@ -77,4 +81,8 @@ public class Projet {
         inverseJoinColumns = @JoinColumn(name = "depot_id")
     )
     private Set<Depot> depots;
+
+    // Relation : un projet peut avoir plusieurs déclarations
+    @OneToMany(mappedBy = "projet", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Declaration> declarations;
 }

@@ -33,9 +33,12 @@ public class ProjetDTO {
     @jakarta.validation.constraints.NotNull(message = "L'état du projet est obligatoire")
     @jakarta.validation.constraints.Size(min = 2, max = 50, message = "L'état doit comporter entre 2 et 50 caractères")
     private String etat;
+
+    @jakarta.validation.constraints.Size(max = 100, message = "Le port ne doit pas dépasser 100 caractères")
+    private String port;
     
-        // Champs ajoutés
-        private java.time.LocalDate dateDebut;
-        private java.time.LocalDate dateFin;
-        private Boolean active;
+    // Champs ajoutés
+    private java.time.LocalDate dateDebut;
+    private java.time.LocalDate dateFin;
+    private Boolean active;
 }
