@@ -20,4 +20,18 @@ public class GlobalExceptionHandler {
         }
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(ChargementNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleChargementNotFoundException(ChargementNotFoundException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DechargementNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleDechargementNotFoundException(DechargementNotFoundException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
 }
