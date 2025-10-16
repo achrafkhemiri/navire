@@ -33,10 +33,10 @@ public class Dechargement {
     private Double poidComplet;
 
     @ManyToOne
-    @JoinColumn(name = "client_id", nullable = false)
+    @JoinColumn(name = "client_id", nullable = true)
     private Client client;
 
     @ManyToOne
-    @JoinColumn(name = "depot_id", nullable = false)
+    @JoinColumn(name = "depot_id", nullable = true)
     private Depot depot;
 }

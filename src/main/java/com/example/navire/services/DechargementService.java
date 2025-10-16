@@ -41,15 +41,28 @@ public class DechargementService {
 
     @Transactional
     public DechargementDTO createDechargement(DechargementDTO dechargementDTO) {
+        // Valider que soit le client, soit le dépôt est fourni (au moins un des deux)
+        if (dechargementDTO.getClientId() == null && dechargementDTO.getDepotId() == null) {
+            throw new IllegalArgumentException("Au moins un client ou un dépôt doit être spécifié");
+        }
+        
         // Valider l'existence des entités liées
         Chargement chargement = chargementRepository.findById(dechargementDTO.getChargementId())
                 .orElseThrow(() -> new ChargementNotFoundException(dechargementDTO.getChargementId()));
         
-        Client client = clientRepository.findById(dechargementDTO.getClientId())
-                .orElseThrow(() -> new ClientNotFoundException(dechargementDTO.getClientId()));
+        // Client est optionnel
+        Client client = null;
+        if (dechargementDTO.getClientId() != null) {
+            client = clientRepository.findById(dechargementDTO.getClientId())
+                    .orElseThrow(() -> new ClientNotFoundException(dechargementDTO.getClientId()));
+        }
         
-        Depot depot = depotRepository.findById(dechargementDTO.getDepotId())
-                .orElseThrow(() -> new DepotNotFoundException(dechargementDTO.getDepotId()));
+        // Dépôt est optionnel
+        Depot depot = null;
+        if (dechargementDTO.getDepotId() != null) {
+            depot = depotRepository.findById(dechargementDTO.getDepotId())
+                    .orElseThrow(() -> new DepotNotFoundException(dechargementDTO.getDepotId()));
+        }
 
         Dechargement dechargement = new Dechargement();
         dechargement.setChargement(chargement);
