@@ -21,6 +21,9 @@ public class DechargementDTO {
     private Long clientId;
     private Long depotId;
     
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime dateDechargement;
+    
     // Données du chargement
     private Long camionId;
     private Long chauffeurId;

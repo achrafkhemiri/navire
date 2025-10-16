@@ -70,6 +70,7 @@ public class DechargementService {
         dechargement.setNumBonLivraison(dechargementDTO.getNumBonLivraison());
         dechargement.setPoidCamionVide(dechargementDTO.getPoidCamionVide());
         dechargement.setPoidComplet(dechargementDTO.getPoidComplet());
+        dechargement.setDateDechargement(dechargementDTO.getDateDechargement());
         dechargement.setClient(client);
         dechargement.setDepot(depot);
 
@@ -119,6 +120,10 @@ public class DechargementService {
 
         if (dechargementDTO.getPoidComplet() != null) {
             dechargement.setPoidComplet(dechargementDTO.getPoidComplet());
+        }
+
+        if (dechargementDTO.getDateDechargement() != null) {
+            dechargement.setDateDechargement(dechargementDTO.getDateDechargement());
         }
 
         Dechargement updatedDechargement = dechargementRepository.save(dechargement);
@@ -187,9 +192,20 @@ public class DechargementService {
         // Initialiser le reste avec la quantité
         voyage.setReste(quantite);
         
-        // Poids depot et client
-        voyage.setPoidsDepot(quantite);
-        voyage.setPoidsClient(0.0);
+        // Poids depot et client - Logique corrigée
+        if (dechargement.getClient() != null) {
+            // Si c'est un client, enregistrer dans poidsClient
+            voyage.setPoidsClient(quantite);
+            voyage.setPoidsDepot(0.0);
+        } else if (dechargement.getDepot() != null) {
+            // Si c'est un dépôt, enregistrer dans poidsDepot
+            voyage.setPoidsDepot(quantite);
+            voyage.setPoidsClient(0.0);
+        } else {
+            // Cas par défaut (ne devrait pas arriver)
+            voyage.setPoidsDepot(0.0);
+            voyage.setPoidsClient(0.0);
+        }
         
         voyageRepository.save(voyage);
     }

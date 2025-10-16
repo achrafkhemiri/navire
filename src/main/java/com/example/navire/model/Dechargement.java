@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "dechargement")
 @Data
@@ -31,6 +33,9 @@ public class Dechargement {
 
     @Column(name = "poid_complet")
     private Double poidComplet;
+
+    @Column(name = "date_dechargement")
+    private LocalDateTime dateDechargement;
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = true)
