@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -31,6 +31,6 @@ public class DechargementDTO {
     private String navire;
     private String port;
     
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate dateChargement;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime dateChargement;
 }
