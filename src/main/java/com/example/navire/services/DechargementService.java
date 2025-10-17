@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -170,7 +170,7 @@ public class DechargementService {
         Voyage voyage = new Voyage();
         voyage.setNumBonLivraison(dechargement.getNumBonLivraison());
         voyage.setNumTicket(dechargement.getNumTicket());
-        voyage.setDate(LocalDate.now());
+        voyage.setDate(LocalDateTime.now());
         voyage.setSociete(chargement.getSociete());
         
         // Relations depuis le chargement

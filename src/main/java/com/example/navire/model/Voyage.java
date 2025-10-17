@@ -7,7 +7,7 @@ import java.util.HashSet;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -39,7 +39,7 @@ public class Voyage {
 
     @NotNull(message = "La date est obligatoire")
     @Column(nullable = false)
-    private LocalDate date;
+    private LocalDateTime date;
 
     @Column(name = "poids_client")
     private Double poidsClient;

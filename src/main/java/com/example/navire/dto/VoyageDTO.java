@@ -2,7 +2,7 @@ package com.example.navire.dto;
 import java.util.Set;
 
 import lombok.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -14,7 +14,7 @@ public class VoyageDTO {
     private String numBonLivraison;
     private String numTicket;
     private Double reste;
-    private LocalDate date;
+    private LocalDateTime date;
     private Double poidsClient;
     private Double poidsDepot;
     private Long chauffeurId;
