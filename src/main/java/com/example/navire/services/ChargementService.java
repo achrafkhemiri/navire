@@ -53,6 +53,7 @@ public class ChargementService {
         chargement.setCamion(camion);
         chargement.setChauffeur(chauffeur);
         chargement.setSociete(chargementDTO.getSociete());
+    chargement.setSocieteP(chargementDTO.getSocieteP());
         chargement.setProjet(projet);
         chargement.setDateChargement(chargementDTO.getDateChargement());
 
@@ -86,6 +87,10 @@ public class ChargementService {
 
         if (chargementDTO.getSociete() != null) {
             chargement.setSociete(chargementDTO.getSociete());
+        }
+
+        if (chargementDTO.getSocieteP() != null) {
+            chargement.setSocieteP(chargementDTO.getSocieteP());
         }
 
         if (chargementDTO.getDateChargement() != null) {

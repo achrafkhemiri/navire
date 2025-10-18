@@ -6,13 +6,17 @@ import com.example.navire.mapper.ProjetMapper;
 import com.example.navire.model.Client;
 import com.example.navire.model.Projet;
 import com.example.navire.model.Depot;
+import com.example.navire.model.Societe;
 import com.example.navire.model.ProjetClient;
 import com.example.navire.repository.ProjetRepository;
+import com.example.navire.repository.SocieteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +29,8 @@ public class ProjetService {
     private com.example.navire.repository.ClientRepository clientRepository;
     @Autowired
     private com.example.navire.repository.DepotRepository depotRepository;
+    @Autowired
+    private SocieteRepository societeRepository;
     @Autowired
     private QuantiteService quantiteService;
 
@@ -47,6 +53,24 @@ public class ProjetService {
         projet.setDateDebut(dto.getDateDebut());
         projet.setDateFin(dto.getDateFin());
         projet.setActive(dto.getActive() != null ? dto.getActive() : true);
+        
+        // Associer les sociétés si des noms sont fournis
+        if (dto.getSocieteNoms() != null && !dto.getSocieteNoms().isEmpty()) {
+            Set<Societe> societes = new HashSet<>();
+            for (String societeNom : dto.getSocieteNoms()) {
+                // Chercher la société existante ou en créer une nouvelle
+                Societe societe = societeRepository.findByNom(societeNom)
+                        .orElseGet(() -> {
+                            // Créer une nouvelle société si elle n'existe pas
+                            Societe nouvelleSociete = new Societe();
+                            nouvelleSociete.setNom(societeNom);
+                            return societeRepository.save(nouvelleSociete);
+                        });
+                societes.add(societe);
+            }
+            projet.setSocietes(societes);
+        }
+        
         return projetMapper.toDTO(projetRepository.save(projet));
     }
 
@@ -54,7 +78,7 @@ public class ProjetService {
     public ProjetDTO updateProjet(Long id, ProjetDTO dto) {
         Projet projet = projetRepository.findById(id)
                 .orElseThrow(() -> new ProjetNotFoundException(id));
-        projet.setNom(dto.getNom());
+        
         projet.setNomProduit(dto.getNomProduit());
         projet.setQuantiteTotale(dto.getQuantiteTotale());
         projet.setNomNavire(dto.getNomNavire());
@@ -63,6 +87,24 @@ public class ProjetService {
         projet.setDateDebut(dto.getDateDebut());
         projet.setDateFin(dto.getDateFin());
         projet.setActive(dto.getActive() != null ? dto.getActive() : projet.getActive());
+        
+        // Mettre à jour les sociétés
+        if (dto.getSocieteNoms() != null) {
+            Set<Societe> societes = new HashSet<>();
+            for (String societeNom : dto.getSocieteNoms()) {
+                // Chercher la société existante ou en créer une nouvelle
+                Societe societe = societeRepository.findByNom(societeNom)
+                        .orElseGet(() -> {
+                            // Créer une nouvelle société si elle n'existe pas
+                            Societe nouvelleSociete = new Societe();
+                            nouvelleSociete.setNom(societeNom);
+                            return societeRepository.save(nouvelleSociete);
+                        });
+                societes.add(societe);
+            }
+            projet.setSocietes(societes);
+        }
+        
         return projetMapper.toDTO(projetRepository.save(projet));
     }
 
@@ -114,5 +156,49 @@ public class ProjetService {
         Projet projet = projetRepository.findById(projetId)
                 .orElseThrow(() -> new ProjetNotFoundException(projetId));
         return projet.getDepots().stream().collect(Collectors.toList());
+    }
+
+    /**
+     * Ajoute une société à un projet
+     */
+    @Transactional
+    public void addSocieteToProjet(Long projetId, Long societeId) {
+        Projet projet = projetRepository.findById(projetId)
+                .orElseThrow(() -> new ProjetNotFoundException(projetId));
+        Societe societe = societeRepository.findById(societeId)
+                .orElseThrow(() -> new RuntimeException("Société non trouvée avec l'id: " + societeId));
+        
+        if (projet.getSocietes() == null) {
+            projet.setSocietes(new HashSet<>());
+        }
+        projet.getSocietes().add(societe);
+        projetRepository.save(projet);
+    }
+
+    /**
+     * Retire une société d'un projet
+     */
+    @Transactional
+    public void removeSocieteFromProjet(Long projetId, Long societeId) {
+        Projet projet = projetRepository.findById(projetId)
+                .orElseThrow(() -> new ProjetNotFoundException(projetId));
+        Societe societe = societeRepository.findById(societeId)
+                .orElseThrow(() -> new RuntimeException("Société non trouvée avec l'id: " + societeId));
+        
+        if (projet.getSocietes() != null) {
+            projet.getSocietes().remove(societe);
+            projetRepository.save(projet);
+        }
+    }
+
+    /**
+     * Récupère toutes les sociétés associées à un projet
+     */
+    public List<Societe> getSocietesByProjetId(Long projetId) {
+        Projet projet = projetRepository.findById(projetId)
+                .orElseThrow(() -> new ProjetNotFoundException(projetId));
+        return projet.getSocietes() != null 
+                ? projet.getSocietes().stream().collect(Collectors.toList())
+                : List.of();
     }
 }

@@ -20,7 +20,4 @@ public class DeclarationDTO {
 
     @jakarta.validation.constraints.NotNull(message = "L'ID du projet est obligatoire")
     private Long projetId;
-    
-    // Pour affichage (optionnel)
-    private String projetNom;
 }

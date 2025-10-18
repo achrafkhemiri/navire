@@ -29,7 +29,6 @@ public class DechargementDTO {
     private Long chauffeurId;
     private String societe;
     private Long projetId;
-    private String nomProjet;
     private String produit;
     private String navire;
     private String port;

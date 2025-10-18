@@ -12,7 +12,6 @@ public interface ChargementMapper {
     @Mapping(source = "camion.id", target = "camionId")
     @Mapping(source = "chauffeur.id", target = "chauffeurId")
     @Mapping(source = "projet.id", target = "projetId")
-    @Mapping(source = "projet.nom", target = "nomProjet")
     @Mapping(source = "projet.nomProduit", target = "produit")
     @Mapping(source = "projet.nomNavire", target = "navire")
     @Mapping(source = "projet.port", target = "port")

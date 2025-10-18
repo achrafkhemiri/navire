@@ -9,7 +9,6 @@ import org.mapstruct.Mapping;
 public interface DeclarationMapper {
     
     @Mapping(source = "projet.id", target = "projetId")
-    @Mapping(source = "projet.nom", target = "projetNom")
     DeclarationDTO toDTO(Declaration declaration);
     
     @Mapping(source = "projetId", target = "projet.id")

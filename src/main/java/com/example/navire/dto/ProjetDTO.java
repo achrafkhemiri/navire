@@ -1,6 +1,9 @@
 package com.example.navire.dto;
 
 import lombok.*;
+import java.util.Set;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.example.navire.config.StringSetDeserializer;
 
 @Getter
 @Setter
@@ -9,10 +12,6 @@ import lombok.*;
 @ToString
 public class ProjetDTO {
     private Long id;
-
-    @jakarta.validation.constraints.NotNull(message = "Le nom du projet est obligatoire")
-    @jakarta.validation.constraints.Size(min = 2, max = 100, message = "Le nom du projet doit comporter entre 2 et 100 caractères")
-    private String nom;
 
     @jakarta.validation.constraints.NotNull(message = "Le nom du produit est obligatoire")
     @jakarta.validation.constraints.Size(min = 2, max = 100, message = "Le nom du produit doit comporter entre 2 et 100 caractères")
@@ -41,4 +40,8 @@ public class ProjetDTO {
     private java.time.LocalDate dateDebut;
     private java.time.LocalDate dateFin;
     private Boolean active;
+    
+    // Noms des sociétés associées
+    @JsonDeserialize(using = StringSetDeserializer.class)
+    private Set<String> societeNoms;
 }

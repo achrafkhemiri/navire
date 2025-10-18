@@ -163,9 +163,9 @@ public class QuantiteService {
         if (!result.isValide()) {
             // Créer une notification d'erreur
             String message = String.format(
-                "Impossible d'ajouter le client au projet '%s'. " +
+                "Impossible d'ajouter le client au projet ID '%d'. " +
                 "Quantité demandée: %.2f, Quantité restante: %.2f",
-                projet.getNom(), quantiteAutorisee, quantiteRestante
+                projetId, quantiteAutorisee, quantiteRestante
             );
             notificationService.creerNotification(
                 NotificationService.TypeNotification.DEPASSEMENT_QUANTITE,
@@ -182,8 +182,8 @@ public class QuantiteService {
             
             if (pourcentage >= 90) {
                 String message = String.format(
-                    "⚠️ Attention! Le projet '%s' atteint %.2f%% de sa capacité.",
-                    projet.getNom(), pourcentage
+                    "⚠️ Attention! Le projet ID '%d' atteint %.2f%% de sa capacité.",
+                    projetId, pourcentage
                 );
                 notificationService.creerNotification(
                     NotificationService.TypeNotification.QUANTITE_PROCHE_LIMITE,
@@ -194,8 +194,8 @@ public class QuantiteService {
                 );
             } else if (pourcentage >= 80) {
                 String message = String.format(
-                    "Le projet '%s' atteint %.2f%% de sa capacité.",
-                    projet.getNom(), pourcentage
+                    "Le projet ID '%d' atteint %.2f%% de sa capacité.",
+                    projetId, pourcentage
                 );
                 notificationService.creerNotification(
                     NotificationService.TypeNotification.QUANTITE_PROCHE_LIMITE,

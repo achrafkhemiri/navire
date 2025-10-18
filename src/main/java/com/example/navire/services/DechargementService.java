@@ -170,8 +170,11 @@ public class DechargementService {
         Voyage voyage = new Voyage();
         voyage.setNumBonLivraison(dechargement.getNumBonLivraison());
         voyage.setNumTicket(dechargement.getNumTicket());
-        voyage.setDate(LocalDateTime.now());
+        // Utiliser la date du déchargement si fournie, sinon fallback à maintenant
+        voyage.setDate(dechargement.getDateDechargement() != null ? dechargement.getDateDechargement() : LocalDateTime.now());
         voyage.setSociete(chargement.getSociete());
+        // Propager également la société du projet (societeP) depuis le chargement
+        voyage.setSocieteP(chargement.getSocieteP());
         
         // Relations depuis le chargement
         voyage.setCamion(chargement.getCamion());

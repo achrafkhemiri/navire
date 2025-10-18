@@ -51,6 +51,11 @@ public class Voyage {
     @Column(name = "societe", length = 100)
     private String societe;
 
+    // Société du projet (distincte de la société de livraison/transporteur)
+    @Size(max = 100)
+    @Column(name = "societe_p", length = 100)
+    private String societeP;
+
     // Relations
     @ManyToOne
     @JoinColumn(name = "chauffeur_id")

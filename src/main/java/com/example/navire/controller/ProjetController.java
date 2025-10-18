@@ -54,6 +54,41 @@ public class ProjetController {
         return ResponseEntity.ok(dtos);
     }
 
+    /**
+     * Ajoute une société à un projet
+     */
+    @PostMapping("/{projetId}/societes/{societeId}")
+    public ResponseEntity<?> addSocieteToProjet(@PathVariable Long projetId, @PathVariable Long societeId) {
+        projetService.addSocieteToProjet(projetId, societeId);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Retire une société d'un projet
+     */
+    @DeleteMapping("/{projetId}/societes/{societeId}")
+    public ResponseEntity<?> removeSocieteFromProjet(@PathVariable Long projetId, @PathVariable Long societeId) {
+        projetService.removeSocieteFromProjet(projetId, societeId);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Récupère toutes les sociétés associées à un projet
+     */
+    @GetMapping("/{projetId}/societes")
+    public ResponseEntity<List<com.example.navire.dto.SocieteDTO>> getSocietesByProjet(@PathVariable Long projetId) {
+        java.util.List<com.example.navire.model.Societe> societes = projetService.getSocietesByProjetId(projetId);
+        java.util.List<com.example.navire.dto.SocieteDTO> dtos = societes.stream()
+                .map(societe -> {
+                    com.example.navire.dto.SocieteDTO dto = new com.example.navire.dto.SocieteDTO();
+                    dto.setId(societe.getId());
+                    dto.setNom(societe.getNom());
+                    return dto;
+                })
+                .collect(java.util.stream.Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
+
     @GetMapping
     public List<ProjetDTO> getAllProjets() {
         return projetService.getAllProjets();

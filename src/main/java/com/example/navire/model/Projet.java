@@ -21,10 +21,6 @@ public class Projet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Le nom du projet est obligatoire")
-    @Size(min = 2, max = 100, message = "Le nom du projet doit comporter entre 2 et 100 caractères")
-    private String nom;
-
     @NotNull(message = "Le nom du produit est obligatoire")
     @Size(min = 2, max = 100, message = "Le nom du produit doit comporter entre 2 et 100 caractères")
     @Column(name = "nom_produit")
@@ -81,6 +77,15 @@ public class Projet {
         inverseJoinColumns = @JoinColumn(name = "depot_id")
     )
     private Set<Depot> depots;
+
+    // Relation Projet <-> Societe (Many-to-Many)
+    @ManyToMany
+    @JoinTable(
+        name = "projet_societe",
+        joinColumns = @JoinColumn(name = "projet_id"),
+        inverseJoinColumns = @JoinColumn(name = "societe_id")
+    )
+    private Set<Societe> societes;
 
     // Relation : un projet peut avoir plusieurs déclarations
     @OneToMany(mappedBy = "projet", cascade = CascadeType.ALL, orphanRemoval = true)

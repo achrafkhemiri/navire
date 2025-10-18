@@ -87,6 +87,7 @@ public class VoyageService {
         voyage.setPoidsClient(dto.getPoidsClient());
         voyage.setPoidsDepot(dto.getPoidsDepot());
         voyage.setSociete(dto.getSociete());
+    voyage.setSocieteP(dto.getSocieteP());
         voyage.setQuantite(dto.getQuantite() != null ? dto.getQuantite() : 0.0);
         // Ajout du chauffeur unique
         if (dto.getChauffeurId() != null) {
@@ -145,6 +146,7 @@ public class VoyageService {
         voyage.setPoidsClient(dto.getPoidsClient());
         voyage.setPoidsDepot(dto.getPoidsDepot());
         voyage.setSociete(dto.getSociete());
+    voyage.setSocieteP(dto.getSocieteP());
         voyage.setQuantite(dto.getQuantite() != null ? dto.getQuantite() : voyage.getQuantite());
         // Ajout du chauffeur unique
         if (dto.getChauffeurId() != null) {

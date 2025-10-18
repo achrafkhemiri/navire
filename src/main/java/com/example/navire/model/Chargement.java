@@ -30,6 +30,10 @@ public class Chargement {
     @Column(nullable = false)
     private String societe;
 
+    // Société du projet (distincte du transporteur)
+    @Column(name = "societe_p")
+    private String societeP;
+
     @ManyToOne
     @JoinColumn(name = "projet_id", nullable = false)
     private Projet projet;

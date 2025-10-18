@@ -16,7 +16,6 @@ public interface DechargementMapper {
     @Mapping(source = "chargement.chauffeur.id", target = "chauffeurId")
     @Mapping(source = "chargement.societe", target = "societe")
     @Mapping(source = "chargement.projet.id", target = "projetId")
-    @Mapping(source = "chargement.projet.nom", target = "nomProjet")
     @Mapping(source = "chargement.projet.nomProduit", target = "produit")
     @Mapping(source = "chargement.projet.nomNavire", target = "navire")
     @Mapping(source = "chargement.projet.port", target = "port")

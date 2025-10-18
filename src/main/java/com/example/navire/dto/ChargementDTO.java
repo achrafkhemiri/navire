@@ -16,10 +16,11 @@ public class ChargementDTO {
     private Long camionId;
     private Long chauffeurId;
     private String societe;
+    // Société du projet (distincte du transporteur)
+    private String societeP;
     private Long projetId;
     
     // Données du projet
-    private String nomProjet;
     private String produit;
     private String navire;
     private String port;
