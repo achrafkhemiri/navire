@@ -30,6 +30,13 @@ public class Client {
     @Column(nullable = false)
     private String nom;
 
+    @Size(max = 255, message = "L'adresse ne peut pas dépasser 255 caractères")
+    @Column(length = 255)
+    private String adresse;
+
+    @Size(max = 50, message = "Le matricule fiscal ne peut pas dépasser 50 caractères")
+    @Column(length = 50)
+    private String mf;
 
     // Relation Client <-> Projet (Many-to-Many via ProjetClient)
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)

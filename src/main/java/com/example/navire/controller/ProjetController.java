@@ -47,6 +47,8 @@ public class ProjetController {
                     com.example.navire.dto.DepotDTO dto = new com.example.navire.dto.DepotDTO();
                     dto.setId(depot.getId());
                     dto.setNom(depot.getNom());
+                    dto.setAdresse(depot.getAdresse());
+                    dto.setMf(depot.getMf());
                     dto.setProjetId(projetId); // Associer le projet ID
                     return dto;
                 })
@@ -83,6 +85,10 @@ public class ProjetController {
                     com.example.navire.dto.SocieteDTO dto = new com.example.navire.dto.SocieteDTO();
                     dto.setId(societe.getId());
                     dto.setNom(societe.getNom());
+                    dto.setAdresse(societe.getAdresse());
+                    dto.setRcs(societe.getRcs());
+                    dto.setContact(societe.getContact());
+                    dto.setTva(societe.getTva());
                     return dto;
                 })
                 .collect(java.util.stream.Collectors.toList());

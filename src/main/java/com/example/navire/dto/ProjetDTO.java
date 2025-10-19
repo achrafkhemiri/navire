@@ -2,8 +2,8 @@ package com.example.navire.dto;
 
 import lombok.*;
 import java.util.Set;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.example.navire.config.StringSetDeserializer;
+import com.example.navire.dto.SocieteDTO;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 @Getter
 @Setter
@@ -41,7 +41,10 @@ public class ProjetDTO {
     private java.time.LocalDate dateFin;
     private Boolean active;
     
-    // Noms des sociétés associées
-    @JsonDeserialize(using = StringSetDeserializer.class)
+    // Sociétés associées (informations complètes)
+    private Set<SocieteDTO> societes;
+
+    // Compatibilité: noms des sociétés (lecture/écriture facultative)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Set<String> societeNoms;
 }

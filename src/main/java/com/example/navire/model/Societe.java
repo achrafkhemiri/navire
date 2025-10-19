@@ -23,6 +23,22 @@ public class Societe {
     @Column(name = "nom", unique = true)
     private String nom;
 
+    @Size(max = 255, message = "L'adresse ne doit pas dépasser 255 caractères")
+    @Column(name = "adresse", length = 255)
+    private String adresse;
+
+    @Size(max = 50, message = "Le RCS ne doit pas dépasser 50 caractères")
+    @Column(name = "rcs", length = 50)
+    private String rcs;
+
+    @Size(max = 100, message = "Le contact ne doit pas dépasser 100 caractères")
+    @Column(name = "contact", length = 100)
+    private String contact;
+
+    @Size(max = 50, message = "Le numéro de TVA ne doit pas dépasser 50 caractères")
+    @Column(name = "tva", length = 50)
+    private String tva;
+
     // Relation Many-to-Many avec Projet
     @ManyToMany(mappedBy = "societes")
     @ToString.Exclude

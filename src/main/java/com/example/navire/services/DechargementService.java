@@ -45,6 +45,21 @@ public class DechargementService {
         if (dechargementDTO.getClientId() == null && dechargementDTO.getDepotId() == null) {
             throw new IllegalArgumentException("Au moins un client ou un dépôt doit être spécifié");
         }
+
+        // Valider les poids: obligatoires, entiers, et brut > tar
+        if (dechargementDTO.getPoidCamionVide() == null || dechargementDTO.getPoidComplet() == null) {
+            throw new IllegalArgumentException("Les poids camion tar et poids brut sont obligatoires");
+        }
+        Double poidVideDto = dechargementDTO.getPoidCamionVide();
+        Double poidBrutDto = dechargementDTO.getPoidComplet();
+        boolean videIsInt = Math.floor(poidVideDto) == poidVideDto;
+        boolean brutIsInt = Math.floor(poidBrutDto) == poidBrutDto;
+        if (!videIsInt || !brutIsInt) {
+            throw new IllegalArgumentException("Les poids doivent être des entiers (sans décimales)");
+        }
+        if (poidBrutDto <= poidVideDto) {
+            throw new IllegalArgumentException("Le poids brut doit être strictement supérieur au poids tar");
+        }
         
         // Valider l'existence des entités liées
         Chargement chargement = chargementRepository.findById(dechargementDTO.getChargementId())
@@ -114,12 +129,28 @@ public class DechargementService {
             dechargement.setNumBonLivraison(dechargementDTO.getNumBonLivraison());
         }
 
-        if (dechargementDTO.getPoidCamionVide() != null) {
-            dechargement.setPoidCamionVide(dechargementDTO.getPoidCamionVide());
+        // Mettre à jour les poids avec validation si fournis
+        Double newVide = dechargementDTO.getPoidCamionVide();
+        Double newBrut = dechargementDTO.getPoidComplet();
+        if (newVide != null) {
+            if (Math.floor(newVide) != newVide) {
+                throw new IllegalArgumentException("Le poids tar doit être un entier");
+            }
+            dechargement.setPoidCamionVide(newVide);
         }
 
-        if (dechargementDTO.getPoidComplet() != null) {
-            dechargement.setPoidComplet(dechargementDTO.getPoidComplet());
+        if (newBrut != null) {
+            if (Math.floor(newBrut) != newBrut) {
+                throw new IllegalArgumentException("Le poids brut doit être un entier");
+            }
+            dechargement.setPoidComplet(newBrut);
+        }
+
+        // Si les deux poids sont présents (après mise à jour), valider brut > tar
+        if (dechargement.getPoidCamionVide() != null && dechargement.getPoidComplet() != null) {
+            if (dechargement.getPoidComplet() <= dechargement.getPoidCamionVide()) {
+                throw new IllegalArgumentException("Le poids brut doit être strictement supérieur au poids tar");
+            }
         }
 
         if (dechargementDTO.getDateDechargement() != null) {

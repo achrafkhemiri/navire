@@ -49,6 +49,8 @@ public class ClientService {
         .orElseThrow(() -> new ClientNotFoundException(id));
     client.setNumero(dto.getNumero());
     client.setNom(dto.getNom());
+    client.setAdresse(dto.getAdresse());
+    client.setMf(dto.getMf());
     // QuantiteAutorisee is managed via ProjetClient, not directly here
     return clientMapper.toDTO(clientRepository.save(client));
     }

@@ -54,20 +54,44 @@ public class ProjetService {
         projet.setDateFin(dto.getDateFin());
         projet.setActive(dto.getActive() != null ? dto.getActive() : true);
         
-        // Associer les sociétés si des noms sont fournis
+        // Associer les sociétés si fournies
+        Set<Societe> societes = new HashSet<>();
+        // 1) Nouvelles sociétés en tant qu'objets complets
+        if (dto.getSocietes() != null && !dto.getSocietes().isEmpty()) {
+            for (com.example.navire.dto.SocieteDTO sDto : dto.getSocietes()) {
+                Societe s = null;
+                if (sDto.getId() != null) {
+                    s = societeRepository.findById(sDto.getId()).orElse(null);
+                }
+                if (s == null && sDto.getNom() != null) {
+                    s = societeRepository.findByNom(sDto.getNom()).orElse(null);
+                }
+                if (s == null) {
+                    s = new Societe();
+                }
+                // Mettre à jour/initialiser les champs connus
+                s.setNom(sDto.getNom());
+                s.setAdresse(sDto.getAdresse());
+                s.setRcs(sDto.getRcs());
+                s.setContact(sDto.getContact());
+                s.setTva(sDto.getTva());
+                s = societeRepository.save(s);
+                societes.add(s);
+            }
+        }
+        // 2) Compatibilité: association via noms
         if (dto.getSocieteNoms() != null && !dto.getSocieteNoms().isEmpty()) {
-            Set<Societe> societes = new HashSet<>();
             for (String societeNom : dto.getSocieteNoms()) {
-                // Chercher la société existante ou en créer une nouvelle
                 Societe societe = societeRepository.findByNom(societeNom)
                         .orElseGet(() -> {
-                            // Créer une nouvelle société si elle n'existe pas
                             Societe nouvelleSociete = new Societe();
                             nouvelleSociete.setNom(societeNom);
                             return societeRepository.save(nouvelleSociete);
                         });
                 societes.add(societe);
             }
+        }
+        if (!societes.isEmpty()) {
             projet.setSocietes(societes);
         }
         
@@ -89,20 +113,41 @@ public class ProjetService {
         projet.setActive(dto.getActive() != null ? dto.getActive() : projet.getActive());
         
         // Mettre à jour les sociétés
-        if (dto.getSocieteNoms() != null) {
-            Set<Societe> societes = new HashSet<>();
-            for (String societeNom : dto.getSocieteNoms()) {
-                // Chercher la société existante ou en créer une nouvelle
-                Societe societe = societeRepository.findByNom(societeNom)
-                        .orElseGet(() -> {
-                            // Créer une nouvelle société si elle n'existe pas
-                            Societe nouvelleSociete = new Societe();
-                            nouvelleSociete.setNom(societeNom);
-                            return societeRepository.save(nouvelleSociete);
-                        });
-                societes.add(societe);
+        if (dto.getSocietes() != null || dto.getSocieteNoms() != null) {
+            Set<Societe> societesMaj = new HashSet<>();
+            if (dto.getSocietes() != null) {
+                for (com.example.navire.dto.SocieteDTO sDto : dto.getSocietes()) {
+                    Societe s = null;
+                    if (sDto.getId() != null) {
+                        s = societeRepository.findById(sDto.getId()).orElse(null);
+                    }
+                    if (s == null && sDto.getNom() != null) {
+                        s = societeRepository.findByNom(sDto.getNom()).orElse(null);
+                    }
+                    if (s == null) {
+                        s = new Societe();
+                    }
+                    s.setNom(sDto.getNom());
+                    s.setAdresse(sDto.getAdresse());
+                    s.setRcs(sDto.getRcs());
+                    s.setContact(sDto.getContact());
+                    s.setTva(sDto.getTva());
+                    s = societeRepository.save(s);
+                    societesMaj.add(s);
+                }
             }
-            projet.setSocietes(societes);
+            if (dto.getSocieteNoms() != null) {
+                for (String societeNom : dto.getSocieteNoms()) {
+                    Societe s = societeRepository.findByNom(societeNom)
+                            .orElseGet(() -> {
+                                Societe nouvelleSociete = new Societe();
+                                nouvelleSociete.setNom(societeNom);
+                                return societeRepository.save(nouvelleSociete);
+                            });
+                    societesMaj.add(s);
+                }
+            }
+            projet.setSocietes(societesMaj);
         }
         
         return projetMapper.toDTO(projetRepository.save(projet));

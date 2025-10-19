@@ -55,6 +55,10 @@ public class SocieteService {
         });
         
         societe.setNom(dto.getNom());
+        societe.setAdresse(dto.getAdresse());
+        societe.setRcs(dto.getRcs());
+        societe.setContact(dto.getContact());
+        societe.setTva(dto.getTva());
         return societeMapper.toDTO(societeRepository.save(societe));
     }
 
