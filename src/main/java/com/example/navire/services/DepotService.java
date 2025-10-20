@@ -68,9 +68,17 @@ public class DepotService {
 
     @Transactional
     public void deleteDepot(Long id) {
-        if (!depotRepository.existsById(id)) {
-            throw new DepotNotFoundException(id);
+        Depot depot = depotRepository.findById(id)
+                .orElseThrow(() -> new DepotNotFoundException(id));
+        
+        // Dissocier le dépôt de tous les projets avant suppression
+        if (depot.getProjets() != null && !depot.getProjets().isEmpty()) {
+            for (com.example.navire.model.Projet projet : depot.getProjets()) {
+                projet.getDepots().remove(depot);
+            }
+            depot.getProjets().clear();
         }
+        
         depotRepository.deleteById(id);
     }
 }
