@@ -26,7 +26,7 @@ public class Notification {
     @Column(nullable = false)
     private NiveauAlerte niveau;
     
-    @Column(nullable = false, length = 500)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String message;
     
     @Column(name = "entite_type")
@@ -43,6 +43,9 @@ public class Notification {
     
     @Column(name = "date_lecture")
     private LocalDateTime dateLecture;
+    
+    @Column(nullable = false)
+    private boolean deletable = true; // Par défaut, les notifications sont supprimables
     
     public enum TypeNotification {
         DEPASSEMENT_QUANTITE,

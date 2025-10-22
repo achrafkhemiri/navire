@@ -5,7 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.util.Set;
-import com.example.navire.model.Projet;
+import com.example.navire.model.ProjetDepot;
 
 @Getter
 @Setter
@@ -33,7 +33,7 @@ public class Depot {
     @Column(length = 50)
     private String mf;
 
-    // Relation Depot <-> Projet (Many-to-Many)
-    @ManyToMany(mappedBy = "depots")
-    private Set<Projet> projets;
+    // Relation Depot <-> Projet (Many-to-Many via ProjetDepot)
+    @OneToMany(mappedBy = "depot", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ProjetDepot> projetDepots;
 }

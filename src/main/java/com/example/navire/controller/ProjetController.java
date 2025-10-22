@@ -31,8 +31,11 @@ public class ProjetController {
     }
 
     @PostMapping("/{projetId}/depots/{depotId}")
-    public ResponseEntity<?> addDepotToProjet(@PathVariable Long projetId, @PathVariable Long depotId) {
-        projetService.addDepotToProjet(projetId, depotId);
+    public ResponseEntity<?> addDepotToProjet(
+            @PathVariable Long projetId, 
+            @PathVariable Long depotId,
+            @RequestParam(required = false, defaultValue = "0.0") Double quantiteAutorisee) {
+        projetService.addDepotToProjet(projetId, depotId, quantiteAutorisee);
         return ResponseEntity.ok().build();
     }
 

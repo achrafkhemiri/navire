@@ -2,8 +2,10 @@ package com.example.navire.services;
 
 import com.example.navire.model.Projet;
 import com.example.navire.model.ProjetClient;
+import com.example.navire.model.ProjetDepot;
 import com.example.navire.model.Voyage;
 import com.example.navire.repository.ProjetClientRepository;
+import com.example.navire.repository.ProjetDepotRepository;
 import com.example.navire.repository.ProjetRepository;
 import com.example.navire.repository.VoyageRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ public class QuantiteService {
     
     private final ProjetRepository projetRepository;
     private final ProjetClientRepository projetClientRepository;
+    private final ProjetDepotRepository projetDepotRepository;
     private final VoyageRepository voyageRepository;
     private final NotificationService notificationService;
     
@@ -42,6 +45,17 @@ public class QuantiteService {
         List<ProjetClient> projetClients = projetClientRepository.findByProjetId(projetId);
         return projetClients.stream()
                 .mapToDouble(ProjetClient::getQuantiteAutorisee)
+                .sum();
+    }
+    
+    /**
+     * Calcule la somme des quantités autorisées pour tous les dépôts d'un projet
+     */
+    @Transactional(readOnly = true)
+    public double calculerQuantiteDepotsAutorises(Long projetId) {
+        List<ProjetDepot> projetDepots = projetDepotRepository.findByProjetId(projetId);
+        return projetDepots.stream()
+                .mapToDouble(ProjetDepot::getQuantiteAutorisee)
                 .sum();
     }
     
@@ -164,6 +178,74 @@ public class QuantiteService {
             // Créer une notification d'erreur
             String message = String.format(
                 "Impossible d'ajouter le client au projet ID '%d'. " +
+                "Quantité demandée: %.2f, Quantité restante: %.2f",
+                projetId, quantiteAutorisee, quantiteRestante
+            );
+            notificationService.creerNotification(
+                NotificationService.TypeNotification.DEPASSEMENT_QUANTITE,
+                NotificationService.NiveauAlerte.DANGER,
+                message,
+                "PROJET",
+                projetId
+            );
+            result.setMessage(message);
+        } else {
+            // Vérifier si on est proche de la limite (>80%)
+            double nouvelleQuantiteUtilisee = calculerQuantiteUtilisee(projetId) + quantiteAutorisee;
+            double pourcentage = (nouvelleQuantiteUtilisee / projet.getQuantiteTotale()) * 100;
+            
+            if (pourcentage >= 90) {
+                String message = String.format(
+                    "⚠️ Attention! Le projet ID '%d' atteint %.2f%% de sa capacité.",
+                    projetId, pourcentage
+                );
+                notificationService.creerNotification(
+                    NotificationService.TypeNotification.QUANTITE_PROCHE_LIMITE,
+                    NotificationService.NiveauAlerte.DANGER,
+                    message,
+                    "PROJET",
+                    projetId
+                );
+            } else if (pourcentage >= 80) {
+                String message = String.format(
+                    "Le projet ID '%d' atteint %.2f%% de sa capacité.",
+                    projetId, pourcentage
+                );
+                notificationService.creerNotification(
+                    NotificationService.TypeNotification.QUANTITE_PROCHE_LIMITE,
+                    NotificationService.NiveauAlerte.WARNING,
+                    message,
+                    "PROJET",
+                    projetId
+                );
+            }
+            
+            result.setMessage("Validation réussie");
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Valide l'ajout d'un dépôt avec une quantité autorisée
+     * Génère des notifications si nécessaire
+     */
+    @Transactional
+    public ValidationResult validerAjoutDepot(Long projetId, double quantiteAutorisee) {
+        Projet projet = projetRepository.findById(projetId)
+                .orElseThrow(() -> new RuntimeException("Projet non trouvé"));
+        
+        double quantiteRestante = calculerQuantiteRestante(projetId);
+        
+        ValidationResult result = new ValidationResult();
+        result.setValide(quantiteRestante >= quantiteAutorisee);
+        result.setQuantiteRestante(quantiteRestante);
+        result.setQuantiteDemandee(quantiteAutorisee);
+        
+        if (!result.isValide()) {
+            // Créer une notification d'erreur
+            String message = String.format(
+                "Impossible d'ajouter le dépôt au projet ID '%d'. " +
                 "Quantité demandée: %.2f, Quantité restante: %.2f",
                 projetId, quantiteAutorisee, quantiteRestante
             );

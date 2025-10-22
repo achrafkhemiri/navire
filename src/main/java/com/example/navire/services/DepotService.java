@@ -71,14 +71,7 @@ public class DepotService {
         Depot depot = depotRepository.findById(id)
                 .orElseThrow(() -> new DepotNotFoundException(id));
         
-        // Dissocier le dépôt de tous les projets avant suppression
-        if (depot.getProjets() != null && !depot.getProjets().isEmpty()) {
-            for (com.example.navire.model.Projet projet : depot.getProjets()) {
-                projet.getDepots().remove(depot);
-            }
-            depot.getProjets().clear();
-        }
-        
+        // Les ProjetDepot seront supprimés automatiquement grâce à cascade = CascadeType.ALL, orphanRemoval = true
         depotRepository.deleteById(id);
     }
 }

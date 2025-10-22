@@ -69,14 +69,9 @@ public class Projet {
     @OneToMany(mappedBy = "projet", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProjetClient> projetClients;
 
-    // Relation Projet <-> Depot (Many-to-Many)
-    @ManyToMany
-    @JoinTable(
-        name = "projet_depot",
-        joinColumns = @JoinColumn(name = "projet_id"),
-        inverseJoinColumns = @JoinColumn(name = "depot_id")
-    )
-    private Set<Depot> depots;
+    // Relation Projet <-> Depot (Many-to-Many via ProjetDepot)
+    @OneToMany(mappedBy = "projet", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ProjetDepot> projetDepots;
 
     // Relation Projet <-> Societe (Many-to-Many)
     @ManyToMany

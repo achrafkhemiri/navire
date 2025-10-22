@@ -14,4 +14,6 @@ public interface ProjetClientRepository extends JpaRepository<ProjetClient, Long
     List<Client> findClientsByProjetId(@Param("projetId") Long projetId);
 
     List<ProjetClient> findByProjetId(Long projetId);
+    
+    List<ProjetClient> findByClientId(Long clientId);
 }

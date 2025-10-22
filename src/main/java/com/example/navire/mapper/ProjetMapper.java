@@ -20,7 +20,7 @@ public interface ProjetMapper {
     @Mapping(target = "societes", ignore = true)
     @Mapping(target = "voyages", ignore = true)
     @Mapping(target = "projetClients", ignore = true)
-    @Mapping(target = "depots", ignore = true)
+    @Mapping(target = "projetDepots", ignore = true)
     @Mapping(target = "declarations", ignore = true)
     Projet toEntity(ProjetDTO dto);
 

@@ -62,6 +62,17 @@ public class NotificationService {
     }
     
     /**
+     * Crée une notification à partir d'un objet Notification complet
+     */
+    @Transactional
+    public Notification creerNotification(Notification notification) {
+        if (notification.getDateCreation() == null) {
+            notification.setDateCreation(java.time.LocalDateTime.now());
+        }
+        return notificationRepository.save(notification);
+    }
+    
+    /**
      * Crée une notification simple sans entité liée
      */
     @Transactional
@@ -175,21 +186,29 @@ public class NotificationService {
     }
     
     /**
-     * Supprime une notification
+     * Supprime une notification (seulement si elle est supprimable)
      */
     @Transactional
     public void supprimerNotification(Long notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new RuntimeException("Notification non trouvée avec l'ID: " + notificationId));
+        
+        if (!notification.isDeletable()) {
+            throw new RuntimeException("Cette notification ne peut pas être supprimée car elle est critique pour la traçabilité");
+        }
+        
         notificationRepository.deleteById(notificationId);
     }
     
     /**
-     * Supprime toutes les notifications lues
+     * Supprime toutes les notifications lues (seulement celles qui sont supprimables)
      */
     @Transactional
     public void supprimerNotificationsLues() {
         List<Notification> notifications = notificationRepository.findAllByOrderByDateCreationDesc();
         List<Notification> lues = notifications.stream()
                 .filter(Notification::isLu)
+                .filter(Notification::isDeletable) // Ne supprimer que les notifications supprimables
                 .toList();
         notificationRepository.deleteAll(lues);
     }

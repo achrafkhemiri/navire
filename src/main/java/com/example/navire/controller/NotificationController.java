@@ -28,6 +28,14 @@ public class NotificationController {
     }
     
     /**
+     * Crée une nouvelle notification
+     */
+    @PostMapping
+    public ResponseEntity<Notification> creerNotification(@RequestBody Notification notification) {
+        return ResponseEntity.ok(notificationService.creerNotification(notification));
+    }
+    
+    /**
      * Récupère les notifications non lues
      */
     @GetMapping("/non-lues")

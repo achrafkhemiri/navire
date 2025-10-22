@@ -8,6 +8,7 @@ import com.example.navire.model.Projet;
 import com.example.navire.model.Depot;
 import com.example.navire.model.Societe;
 import com.example.navire.model.ProjetClient;
+import com.example.navire.model.ProjetDepot;
 import com.example.navire.repository.ProjetRepository;
 import com.example.navire.repository.SocieteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -187,10 +188,19 @@ public class ProjetService {
     }
 
     @Transactional
-    public void addDepotToProjet(Long projetId, Long depotId) {
+    public void addDepotToProjet(Long projetId, Long depotId, Double quantiteAutorisee) {
         Projet projet = projetRepository.findById(projetId).orElseThrow(() -> new ProjetNotFoundException(projetId));
         Depot depot = depotRepository.findById(depotId).orElseThrow();
-        projet.getDepots().add(depot);
+        
+        ProjetDepot projetDepot = new ProjetDepot();
+        projetDepot.setProjet(projet);
+        projetDepot.setDepot(depot);
+        projetDepot.setQuantiteAutorisee(quantiteAutorisee != null ? quantiteAutorisee : 0.0);
+        
+        if (projet.getProjetDepots() == null) {
+            projet.setProjetDepots(new HashSet<>());
+        }
+        projet.getProjetDepots().add(projetDepot);
         projetRepository.save(projet);
     }
 
@@ -200,7 +210,9 @@ public class ProjetService {
     public List<Depot> getDepotsByProjetId(Long projetId) {
         Projet projet = projetRepository.findById(projetId)
                 .orElseThrow(() -> new ProjetNotFoundException(projetId));
-        return projet.getDepots().stream().collect(Collectors.toList());
+        return projet.getProjetDepots().stream()
+                .map(ProjetDepot::getDepot)
+                .collect(Collectors.toList());
     }
 
     /**
