@@ -113,12 +113,18 @@ public class DechargementService {
             Client client = clientRepository.findById(dechargementDTO.getClientId())
                     .orElseThrow(() -> new ClientNotFoundException(dechargementDTO.getClientId()));
             dechargement.setClient(client);
+        } else {
+            // Si clientId est null, on supprime le client
+            dechargement.setClient(null);
         }
 
         if (dechargementDTO.getDepotId() != null) {
             Depot depot = depotRepository.findById(dechargementDTO.getDepotId())
                     .orElseThrow(() -> new DepotNotFoundException(dechargementDTO.getDepotId()));
             dechargement.setDepot(depot);
+        } else {
+            // Si depotId est null, on supprime le dépôt
+            dechargement.setDepot(null);
         }
 
         if (dechargementDTO.getNumTicket() != null) {

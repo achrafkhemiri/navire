@@ -33,7 +33,7 @@ public class QuantiteService {
     @Transactional(readOnly = true)
     public double calculerQuantiteUtilisee(Long projetId) {
         double quantiteClients = calculerQuantiteClients(projetId);
-        double quantiteDepots = calculerQuantiteDepots(projetId);
+        double quantiteDepots = calculerQuantiteDepotsAutorises(projetId);
         return quantiteClients + quantiteDepots;
     }
     
@@ -44,6 +44,7 @@ public class QuantiteService {
     public double calculerQuantiteClients(Long projetId) {
         List<ProjetClient> projetClients = projetClientRepository.findByProjetId(projetId);
         return projetClients.stream()
+                .filter(pc -> pc.getQuantiteAutorisee() != null) // Exclure les valeurs null
                 .mapToDouble(ProjetClient::getQuantiteAutorisee)
                 .sum();
     }
@@ -55,6 +56,7 @@ public class QuantiteService {
     public double calculerQuantiteDepotsAutorises(Long projetId) {
         List<ProjetDepot> projetDepots = projetDepotRepository.findByProjetId(projetId);
         return projetDepots.stream()
+                .filter(pd -> pd.getQuantiteAutorisee() != null) // Exclure les valeurs null
                 .mapToDouble(ProjetDepot::getQuantiteAutorisee)
                 .sum();
     }

@@ -89,21 +89,23 @@ public class ProjetDepotService {
         ProjetDepot projetDepot = projetDepotRepository.findById(projetDepotId)
                 .orElseThrow(() -> new RuntimeException("ProjetDepot not found: " + projetDepotId));
         
-        // Calculer la différence de quantité
-        double ancienneQuantite = projetDepot.getQuantiteAutorisee();
+        // Calculer la différence de quantité (positive = augmentation, négative = diminution)
+        double ancienneQuantite = projetDepot.getQuantiteAutorisee() != null ? projetDepot.getQuantiteAutorisee() : 0.0;
         double difference = quantiteAutorisee - ancienneQuantite;
         
-        // Si on augmente la quantité, valider qu'il y a assez de quantité disponible
+        // Si on augmente la quantité, valider qu'il y a assez de quantité disponible dans le projet
+        // En tenant compte que l'ancienne quantité sera libérée
         if (difference > 0) {
             QuantiteService.ValidationResult validation = quantiteService.validerAjoutDepot(
                 projetDepot.getProjet().getId(), 
-                difference
+                difference  // Seulement la différence (augmentation nette)
             );
             
             if (!validation.isValide()) {
                 throw new QuantiteDepassementException(validation.getMessage());
             }
         }
+        // Si on diminue ou garde la même quantité, pas besoin de validation (on libère de l'espace)
         
         projetDepot.setQuantiteAutorisee(quantiteAutorisee);
         projetDepotRepository.save(projetDepot);
